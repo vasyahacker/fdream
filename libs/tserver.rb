@@ -156,7 +156,6 @@ class TelServ
 
     begin
       loop do
-        #next unless IO.select([sock], nil, nil, 1)
         until encoding_selected
           sock.write "\r\nSelect encoding: "
           i = 1
@@ -209,11 +208,6 @@ class TelServ
             password.chomp!
           end
 
-          print '-----\n'
-          print login + '\n'
-          print password + '\n'
-          print '-----\n'
-
           sock.write nocolor ""
           if ($gg.players.key?(login) and $gg.players[login].pwd == Digest::MD5.hexdigest(password))
             logged_in = true
@@ -234,8 +228,6 @@ class TelServ
           @logins.delete(login)
           break
         end
-#next if sock.eof?
-#log(message.force_encoding('utf-8'))
 
         parse_command(login, message)
       end
