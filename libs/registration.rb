@@ -56,6 +56,7 @@ class Registration
     if n >= QUESTIONS.length && answer != ''
       unless @game.check(login)
         @game.CharCreate(login, @tmpReg[login].answers)
+        @game.players[login].addr = login
         @game.players[login].pwd = Digest::MD5.hexdigest(password) unless password.empty?
       end
 

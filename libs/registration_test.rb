@@ -1,10 +1,6 @@
 # Author: Vladislav Fursov (ghostrussian@gmail.com)
 require_relative 'registration'
-require_relative 'players.rb'
-require_relative 'locations.rb'
-require_relative 'descriptions.rb'
-require_relative 'objects.rb'
-require_relative 'game.rb'
+require_relative 'game-mock.rb'
 require 'test/unit'
 
 class RegistrationTest < Test::Unit::TestCase
@@ -30,6 +26,16 @@ class RegistrationTest < Test::Unit::TestCase
     assert_equal(@reg.registred_message, @reg.RegPlayer(@id, 'male'), '8 question')
 
     assert_equal(true, @game.players.key?(@reg.GetLogin(@id)))
+
+    assert_equal('Вася', @game.players[@reg.GetLogin(@id)].name)
+    assert_equal('Васю', @game.players[@reg.GetLogin(@id)].kogo)
+    assert_equal('Васе', @game.players[@reg.GetLogin(@id)].komu)
+    assert_equal('Васей', @game.players[@reg.GetLogin(@id)].kem)
+    assert_equal('Васе', @game.players[@reg.GetLogin(@id)].okom)
+    assert_equal('Васи', @game.players[@reg.GetLogin(@id)].chey)
+    assert_equal('male', @game.players[@reg.GetLogin(@id)].sex)
+    assert_equal(@reg.GetLogin(@id), @game.players[@reg.GetLogin(@id)].addr)
+    assert_equal(nil, @game.players[@reg.GetLogin(@id)].pwd)
   end
 
   def test_reg_player_sex_check
@@ -114,6 +120,17 @@ class RegistrationTest < Test::Unit::TestCase
     assert_equal(@reg.registred_message, @reg.RegPlayerWithLoginAndPassword(@id, 'male'), '8 question')
 
     assert_equal(true, @game.players.key?(@reg.GetLogin(login)))
+
+    assert_equal('Вася', @game.players[@reg.GetLogin(login)].name)
+    assert_equal('Васю', @game.players[@reg.GetLogin(login)].kogo)
+    assert_equal('Васе', @game.players[@reg.GetLogin(login)].komu)
+    assert_equal('Васей', @game.players[@reg.GetLogin(login)].kem)
+    assert_equal('Васе', @game.players[@reg.GetLogin(login)].okom)
+    assert_equal('Васи', @game.players[@reg.GetLogin(login)].chey)
+    assert_equal('male', @game.players[@reg.GetLogin(login)].sex)
+    assert_equal(@reg.GetLogin(login), @game.players[@reg.GetLogin(login)].addr)
+    assert_equal(Digest::MD5.hexdigest('123456'), @game.players[@reg.GetLogin(login)].pwd)
+
   end
 
   def test_reg_player_if_answer_empty_with_login_pass
