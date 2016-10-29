@@ -47,9 +47,13 @@ class Registration
     @tmpReg[login] = RegTmp.new unless @tmpReg.key?(login)
     n = @tmpReg[login].qn
 
+    if n-1 == 6 # sex
+      answer = '' unless answer == 'male' || answer == 'famale'
+    end
+
     @tmpReg[login].answers[n-1] = answer if n > 0
 
-    if n >= QUESTIONS.length
+    if n >= QUESTIONS.length && answer != ''
       unless @game.check(login)
         @game.CharCreate(login, @tmpReg[login].answers)
         @game.players[login].pwd = Digest::MD5.hexdigest(password) unless password.empty?
@@ -73,7 +77,7 @@ class Registration
   def RegPlayerWithLoginAndPassword(tmpId, answer)
     tempLogin = GetLogin(tmpId)
 
-    	[tempLogin] = RegTmp.new unless @tmpReg.key?(tempLogin)
+    @tmpReg[tempLogin] = RegTmp.new unless @tmpReg.key?(tempLogin)
     n = @tmpReg[tempLogin].qn
 
     ask = nil
