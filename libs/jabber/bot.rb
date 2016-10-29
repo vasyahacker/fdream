@@ -51,7 +51,7 @@ module Jabber
     # Direct access to the underlying
     # Jabber::Simple[http://xmpp4r-simple.rubyforge.org/] object.
     attr_reader :jabber
-    attr_accessor :masters,:sendstack,:tserver
+    attr_accessor :masters, :sendstack, :tserver
 
     # Creates a new Jabber::Bot object with the specified +config+ Hash, which
     # must contain +jabber_id+, +password+, and +master+ at a minimum.
@@ -107,16 +107,16 @@ module Jabber
         @config[:master] = [@config[:master]]
       end
 
-      @commands = { :spec => [], :meta => {}, :category => {} }
+      @commands = {:spec => [], :meta => {}, :category => {}}
 
       add_command(
-        :type        => 'основные',
-        :syntax      => 'help | справка [<command>]',
-        :description => 'Display help for the given command, or all commands' +
-            ' if no command is specified',
-        :regex => /^((help)|(справка)|(помощь))(\s+?.+?)?$/i,
-        :alias => [ {:syntax => '? <command>', :regex  => /^\?\s+?.+?$/ } ],
-        :is_public => @config[:is_public]
+          :type => 'основные',
+          :syntax => 'help | справка [<command>]',
+          :description => 'Display help for the given command, or all commands' +
+              ' if no command is specified',
+          :regex => /^((help)|(справка)|(помощь))(\s+?.+?)?$/i,
+          :alias => [{:syntax => '? <command>', :regex => /^\?\s+?.+?$/}],
+          :is_public => @config[:is_public]
       ) { |sender, message| help_message(sender, message) }
 
       @tserver = TelServ.new(self)
@@ -205,7 +205,7 @@ module Jabber
 
       presence(@config[:presence], @config[:status], @config[:priority])
 
-   #   deliver(@masters, "#{@config[:name]} rady master!")
+      #   deliver(@masters, "#{@config[:name]} rady master!")
 
       start_listener_thread
     end
@@ -214,22 +214,22 @@ module Jabber
     # recipient or an Array of recipients.
     def deliver(to, message)
       return nil if @jabber.nil?
-      return nil unless @jabber.connected? 
-		  return nil unless message
-		  return nil if message.nil? 
-		  return nil if to.nil?
-		  return nil unless to
-		  return old_deliver(to, message) if message.size < 1179 || ! to.include?("@icq.dreamhackers.org")
-		  mes = message + " "
-		  mes.scan(/\b.{0,1179}[\.!?\s]+/m){ |m| old_deliver(to, m) }
+      return nil unless @jabber.connected?
+      return nil unless message
+      return nil if message.nil?
+      return nil if to.nil?
+      return nil unless to
+      return old_deliver(to, message) if message.size < 1179 || !to.include?("@icq.dreamhackers.org")
+      mes = message + " "
+      mes.scan(/\b.{0,1179}[\.!?\s]+/m) { |m| old_deliver(to, m) }
     end
-    
+
     def old_deliver(to, message)
 #		Thread.new(@jabber, to, message) do |j,t,m|
 #	      if t.is_a?(Array)
- #   	    t.each { |tt| j.deliver(tt, CGI::unescapeHTML(m)) }
+#   	    t.each { |tt| j.deliver(tt, CGI::unescapeHTML(m)) }
 #	      else
- #   	    j.deliver(t, CGI::unescapeHTML(m))
+#   	    j.deliver(t, CGI::unescapeHTML(m))
 #	      end
 #		 end
       if to.is_a?(Array)
@@ -239,13 +239,13 @@ module Jabber
       else
         @jabber.deliver(to, CGI::unescapeHTML(message.to_s))
       end
-	end
+    end
 
     # Disconnect the bot.  Once the bot has been disconnected, there is no way
     # to restart it by issuing a command.
     def disconnect
       if @jabber.connected?
-       # deliver(@masters, "#{@config[:name]} disconnecting...")
+        # deliver(@masters, "#{@config[:name]} disconnecting...")
         @jabber.disconnect
       end
     end
@@ -265,7 +265,7 @@ module Jabber
       return nil if @jabber.nil?
 
       @config[:presence] = presence
-      @config[:status]   = status
+      @config[:status] = status
       @config[:priority] = priority
 
       status_message = Presence.new(presence, status, priority)
@@ -299,13 +299,13 @@ module Jabber
     def status=(status)
       presence(@config[:presence], status, @config[:priority])
     end
-    
+
     def setcallback(&block)
-	  	@callfunc = block
+      @callfunc = block
     end
 
     def notcommand(&block)
-		  @notcommandfunc = block
+      @notcommandfunc = block
     end
 
 
@@ -329,14 +329,14 @@ module Jabber
               end
               params = message if message[0] == '*'
               response = command[:callback].call(sender, params)
-              @sendstack.push([sender,response]) unless response.nil?
+              @sendstack.push([sender, response]) unless response.nil?
               return
             end
           end
         end
         #response = "hmmm, what?"
         #deliver(sender, response)
-        @notcommandfunc.call(sender,CGI::unescapeHTML(message))
+        @notcommandfunc.call(sender, CGI::unescapeHTML(message))
       end
     end
 
@@ -348,10 +348,10 @@ module Jabber
           ss = @sendstack #.reverse
           @sendstack = []
           begin
-            ss.each do | sender,message|
-              next if @tserver.deliver(sender,message)
+            ss.each do |sender, message|
+              next if @tserver.deliver(sender, message)
 
-              deliver(sender,rmcolors(message.to_s)) if message != false
+              deliver(sender, rmcolors(message.to_s)) if message != false
             end
           rescue => detail
             print "\n[#{Time.now.to_s}] Ошибка при отсылке: #{$!.to_s}\n"+detail.backtrace.join("\n")
@@ -365,7 +365,7 @@ module Jabber
     private
 
     def rmcolors(m)
-      s = m.gsub(/<[\/]?[кзсжчпгg]{1}>/i,"") 
+      s = m.gsub(/<[\/]?[кзсжчпгg]{1}>/i, "")
       s
     end
 
@@ -387,20 +387,20 @@ module Jabber
       syntax = command[:syntax]
       @commands[:category][command[:type]] = nil
       @commands[:meta][name] = {
-        :type        => command[:type],
-        :syntax      => syntax.is_a?(Array) ? syntax : [syntax],
-        :description => command[:description],
-        :is_public   => command[:is_public] || false,
-        :is_alias    => is_alias
+          :type => command[:type],
+          :syntax => syntax.is_a?(Array) ? syntax : [syntax],
+          :description => command[:description],
+          :is_public => command[:is_public] || false,
+          :is_alias => is_alias
       }
     end
 
     # Add a command spec
     def add_command_spec(command, callback) #:nodoc:
       @commands[:spec] << {
-        :regex     => command[:regex],
-        :callback  => callback,
-        :is_public => command[:is_public] || false
+          :regex => command[:regex],
+          :callback => callback,
+          :is_public => command[:is_public] || false
       }
     end
 
@@ -416,47 +416,47 @@ module Jabber
     # Returns the default help message describing the bot's command repertoire.
     # Commands are sorted alphabetically by name, and are displayed according
     # to the bot's and the commands's _public_ attribute.
-    def help41cmd(sender,command_name,command=nil)
-        command = @commands[:meta][command_name] if command.nil?
-        if command.nil?
-          help_message = "Непонятно... Попробуй 'help'"
-        else
-          help_message = ''
-          if !command[:is_alias] and (command[:is_public] or master? sender)
-            help_message += "\n* * *\n"
-            command[:syntax].each { |syntax| help_message += "#{syntax}\n" }
-            help_message += "  #{command[:description]} "
-            help_message += "\n* * *\n"
-          end
+    def help41cmd(sender, command_name, command=nil)
+      command = @commands[:meta][command_name] if command.nil?
+      if command.nil?
+        help_message = "Непонятно... Попробуй 'help'"
+      else
+        help_message = ''
+        if !command[:is_alias] and (command[:is_public] or master? sender)
+          help_message += "\n* * *\n"
+          command[:syntax].each { |syntax| help_message += "#{syntax}\n" }
+          help_message += "  #{command[:description]} "
+          help_message += "\n* * *\n"
         end
-      help_message 
+      end
+      help_message
     end
-    
+
     def help_message(sender, command_name) #:nodoc:
       if command_name.nil? or command_name.length == 0
         # Display help for all commands
         help_message = "Категории команд:\n\n"
-        @commands[:category].each_key do | category |
-            help_message += "#{category}\n"
+        @commands[:category].each_key do |category|
+          help_message += "#{category}\n"
         end
         help_message += "\nПодробнее \"? <категория>\""
         return help_message
       else
         if @commands[:category].has_key? command_name.downcase
           help_message = "Справка по командам из категории \"#{command_name}\":\n\n"
-          @commands[:meta].sort.each { | command |
-              command = command[1]
-              next unless command[:type].downcase == command_name.downcase
-              help_message += help41cmd(sender,nil, command)
+          @commands[:meta].sort.each { |command|
+            command = command[1]
+            next unless command[:type].downcase == command_name.downcase
+            help_message += help41cmd(sender, nil, command)
           }
           return help_message
         else
           # Display help for the given command
-          return help41cmd(sender,command_name)
+          return help41cmd(sender, command_name)
         end
       end
     end
-    
+
 
     # Creates a new Thread dedicated to listening for incoming chat messages.
     # When a chat message is received, the bot checks if the sender is its
@@ -475,16 +475,16 @@ module Jabber
               sender = message.from.to_s.sub(/\/.+$/, '')
               if message.type == :chat
 #                unless $DreamInDream.include? sender
-                  parse_thread = Thread.new do
-                    #p sender
-                    parse_command(sender, CGI::unescapeHTML(message.body))
-                  end
-                  parse_thread.join
+                parse_thread = Thread.new do
+                  #p sender
+                  parse_command(sender, CGI::unescapeHTML(message.body))
+                end
+                parse_thread.join
 #                end
               end
             end
           end
-        sleep 0.7
+          sleep 0.7
         end
       end
       listener_thread.join

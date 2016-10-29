@@ -9,28 +9,29 @@ require 'rubygems'
 require 'sqlite3'
 require 'xmpp4r/roster'
 require 'xmpp4r'
-require './libs/jabber/xmpp4r-simple.rb'
 #require 'xmpp4r-simple'
 #require 'xml/libxml'
 require 'arrayfields'
 require 'thread'
 require 'digest/md5'
 #require "libs/unicodefix.rb"
-require './libs/tserver.rb'
-require './libs/jabber/bot.rb'
-require './libs/db.rb'
-require './libs/players.rb'
-require './libs/locations.rb'
-require './libs/descriptions.rb'
-require './libs/objects.rb'
-require './libs/game.rb'
 
-require "./libs/cmdsettings.rb"
-require "./libs/cmdbase.rb"
-require "./libs/cmdcommon.rb"
-require "./libs/cmdbuild.rb"
-require "./libs/cmdsocials.rb"
-require "./libs/cmdadm.rb"
+require_relative 'libs/jabber/xmpp4r-simple.rb'
+require_relative 'libs/tserver.rb'
+require_relative 'libs/jabber/bot.rb'
+require_relative 'libs/db.rb'
+require_relative 'libs/players.rb'
+require_relative 'libs/locations.rb'
+require_relative 'libs/descriptions.rb'
+require_relative 'libs/objects.rb'
+require_relative 'libs/game.rb'
+
+require_relative "libs/cmdsettings.rb"
+require_relative "libs/cmdbase.rb"
+require_relative "libs/cmdcommon.rb"
+require_relative 'libs/cmdbuild.rb'
+require_relative "libs/cmdsocials.rb"
+require_relative "libs/cmdadm.rb"
 
 GC.enable
 
@@ -49,29 +50,30 @@ $MAINADDR = "JID"
 $SMTP_LOGIN = "LOGIN"
 $SMTP_PWD = "PASS"
 #Jabber::debug = true
-game = Game.new
 
+game = Game.new
 $gg = game
+
 # Configure a public bot
 config = {
-  :name      => 'MUDBot',
-  :jabber_id => 'JID',
-  :password  => 'PASS',
-  :master    => game.admins,
-  :is_public => true,
-  :status    => 'play?',
-  :presence  => :chat,
-  :priority  => 10
+    :name => 'MUDBot',
+    :jabber_id => 'JID',
+    :password => 'PASS',
+    :master => game.admins,
+    :is_public => true,
+    :status => 'play?',
+    :presence => :chat,
+    :priority => 10
 }
 
 # Create a new bot
 bot = Jabber::Bot.new(config)
-LoadSettingsCmd( bot, game, "настройки" )
-LoadBaseCmd( bot, game, "базовые" )
-LoadCommonCmd( bot, game, "основные" )
-LoadAdmCmd( bot, game, "администраторские" )
-LoadBuildCmd( bot, game, "строительство" )
-LoadSocCmd( bot, game, "социалы" )
+LoadSettingsCmd(bot, game, "настройки")
+LoadBaseCmd(bot, game, "базовые")
+LoadCommonCmd(bot, game, "основные")
+LoadAdmCmd(bot, game, "администраторские")
+LoadBuildCmd(bot, game, "строительство")
+LoadSocCmd(bot, game, "социалы")
 
 #reconnecttime = 6000
 #bot.add_command(
@@ -149,13 +151,13 @@ LoadSocCmd( bot, game, "социалы" )
 #    game.AddBook(sender,message) if game.check(sender)
 #end
 
-bot.notcommand{ |addr,txt| 
-	if game.check(addr)
+bot.notcommand { |addr, txt|
+  if game.check(addr)
 #		game.ParseCommands(addr,txt) 
-		mess = game.say(addr,txt)
+    mess = game.say(addr, txt)
 #		bot.deliver(addr,mess)unless mess.nil?
-		bot.sendstack.push([addr,mess])unless mess.nil?
-	end
+    bot.sendstack.push([addr, mess]) unless mess.nil?
+  end
 }
 repeat_thread = Thread.new do
   oldstatus = ''
@@ -165,27 +167,27 @@ repeat_thread = Thread.new do
 #debugger
 # FIXME: переделать время на системный таймер
 #    game.DoTime
-      bot.masters = game.admins if bot.masters != game.admins
-      if oldstatus != game.status
-          bot.status = game.status
-          oldstatus = game.status
-      end
+    bot.masters = game.admins if bot.masters != game.admins
+    if oldstatus != game.status
+      bot.status = game.status
+      oldstatus = game.status
+    end
 #    nstat = `netstat -4|grep 'xmpp-client ESTABLISHED'`
 #    unless nstat.length > 0
-sleep 18
+    sleep 18
     unless bot.jabber.connected?
       bot.jabber.disconnect
-	sleep 1
+      sleep 1
       bot.jabber.connect
       bot.status = game.status
       oldstatus = game.status
     end
- #   sleep 27
+#   sleep 27
   }
 end
 
-game.send{ |addr,txt|
-	bot.sendstack.push([addr,txt])
+game.send { |addr, txt|
+  bot.sendstack.push([addr, txt])
 }
 bot.repeatcalls
 GC.start

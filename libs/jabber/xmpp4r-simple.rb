@@ -19,7 +19,7 @@ module Jabber
 
   class ConnectionError < StandardError #:nodoc:
   end
-  
+
   class Contact #:nodoc:
 
     include DRb::DRbUndumped if defined?(DRb::DRbUndumped)
@@ -46,7 +46,7 @@ module Jabber
       subscription_request.to = jid
       client.send!(subscription_request)
     end
-    
+
     def unsubscribe!
       unsubscription_request = Presence.new.set_type(:unsubscribe)
       unsubscription_request.to = jid
@@ -63,7 +63,7 @@ module Jabber
     def roster_item
       client.roster.items[jid]
     end
-   
+
     def client
       @client
     end
@@ -89,7 +89,7 @@ module Jabber
     def inspect #:nodoc:
       "Jabber::Simple #{@jid}"
     end
-    
+
     # Send a message to jabber user jid.
     #
     # Valid message types are:
@@ -251,7 +251,7 @@ module Jabber
       end
       return updates
     end
-    
+
     # Returns true if there are unprocessed presence updates waiting in the
     # queue, false otherwise.
     def presence_updates?
@@ -272,13 +272,13 @@ module Jabber
     def new_subscriptions(&block)
       dequeue(:new_subscriptions, &block)
     end
-    
+
     # Returns true if there are unprocessed presence updates waiting in the
     # queue, false otherwise.
     def new_subscriptions?
       !queue(:new_subscriptions).empty?
     end
-    
+
     # Returns an array of subscription notifications received since the last
     # time subscription_requests was called. Passing a block will yield each update
     # in turn, allowing you to break part-way through processing (especially
@@ -293,7 +293,7 @@ module Jabber
     def subscription_requests(&block)
       dequeue(:subscription_requests, &block)
     end
- 
+
     # Returns true if auto-accept subscriptions (friend requests) is enabled
     # (default), false otherwise.
     def accept_subscriptions?
@@ -305,7 +305,7 @@ module Jabber
     def accept_subscriptions=(accept_status)
       @accept_subscriptions = accept_status
     end
-    
+
     # Direct access to the underlying Roster helper.
     def roster
       return @roster if @roster
@@ -317,7 +317,7 @@ module Jabber
       connect!() unless connected?
       @client
     end
-    
+
     # Send a Jabber stanza over-the-wire.
     def send!(msg)
       attempts = 0
@@ -350,7 +350,7 @@ module Jabber
     def disconnect
       disconnect!
     end
-    
+
     # Queue messages for delivery once a user has accepted our authorization
     # request. Works in conjunction with the deferred delivery thread.
     #
@@ -422,7 +422,7 @@ module Jabber
 
       roster.add_subscription_request_callback do |roster_item, presence|
         if accept_subscriptions?
-          roster.accept_subscription(presence.from) 
+          roster.accept_subscription(presence.from)
         else
           queue(:subscription_requests) << [roster_item, presence]
         end
@@ -433,10 +433,12 @@ module Jabber
       roster.add_presence_callback do |roster_item, old_presence, new_presence|
         simple_jid = roster_item.jid.strip.to_s
         presence = case new_presence.type
-                   when nil then new_presence.show || :online
-                   when :unavailable then :unavailable
-                   else
-                     nil
+                     when nil then
+                       new_presence.show || :online
+                     when :unavailable then
+                       :unavailable
+                     else
+                       nil
                    end
 
         if presence && @presence_updates[simple_jid] != presence
@@ -467,7 +469,7 @@ module Jabber
     end
 
     def queue(queue)
-      @queues ||= Hash.new { |h,k| h[k] = Queue.new }
+      @queues ||= Hash.new { |h, k| h[k] = Queue.new }
       @queues[queue]
     end
 
