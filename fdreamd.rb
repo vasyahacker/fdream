@@ -34,6 +34,12 @@ require "./libs/cmdadm.rb"
 
 GC.enable
 
+jabber_enable = true # можно отключить запуск jabber
+
+if ARGV[0] == '--disable-jabber'
+  jabber_enable = false
+end
+
 $DreamInDream = Array.new(0)
 # TODO: вынести настройки в конфиг
 # For send debug info
@@ -183,4 +189,12 @@ game.send{ |addr,txt|
 }
 bot.repeatcalls
 GC.start
-bot.connect
+
+if jabber_enable
+  bot.connect
+else
+  print "Disabled jabber mode.\nWait enter for exit...\n"
+  print STDIN.gets.chomp
+  print 'Shutdown...'
+end
+
