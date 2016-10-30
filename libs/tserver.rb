@@ -224,7 +224,8 @@ class TelServ
           end
 
           sock.write nocolor ""
-          if ($gg.players.key?(login) and $gg.players[login].pwd == Digest::MD5.hexdigest(password))
+          if (($gg.players.key?(login) || $gg.players.key?(login+'@telnet'))and 
+            $gg.players[login].pwd == Digest::MD5.hexdigest(password))
             logged_in = true
             @logins[login] = TelnetUser.new(sock, encoding)
             if $gg.players[login].ready
