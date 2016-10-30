@@ -52,7 +52,7 @@ end
 Jabber::debug = false
 
 if ARGV[0] == '--disable-jabber'
-  jabber_enable = false
+  @jabber_enable = false
 end
 
 $DreamInDream = Array.new(0)
