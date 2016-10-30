@@ -197,6 +197,6 @@ if jabber_enable
 else
   print "Disabled jabber mode.\nWait enter for exit...\n"
   print STDIN.gets.chomp
-  print 'Shutdown...'
+  print "Shutdown...\n"
 end
 

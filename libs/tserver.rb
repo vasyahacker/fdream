@@ -100,16 +100,31 @@ class TelServ
   def initialize(jb, port=34567, host='0.0.0.0', maxcon=18)
     @logins = {}
     #@encoding = Encodings[1]
-    server = TCPServer.new(host, port)
+    #server = TCPServer.new(host, port)
     @jb = jb
     telnet_thread = Thread.new do
-      loop do
-        Thread.start(server.accept) do |client|
-          serv(client)
-          client.close
-          @logins.delete(client)
-        end
-      end
+      Socket.tcp_server_loop(host,port) {|client, client_addrinfo|
+        Thread.new {
+          begin
+            log("#{client_addrinfo.ip_address} is connected")
+            serv(client)
+            @logins.delete(client)
+            client.close
+            log("#{client_addrinfo.ip_address} is disconnected")
+          ensure
+            client.close
+          end
+        }
+      }
+
+      # loop do
+      #   Thread.start(server.accept) do |client|
+      #     log("#{client.peeraddr[2]}:#{client.peeraddr[1]} is connected")
+      #     serv(client)
+      #     client.close
+      #     @logins.delete(client)
+      #   end
+      # end
     end
   end
 
@@ -212,26 +227,28 @@ class TelServ
           if ($gg.players.key?(login) and $gg.players[login].pwd == Digest::MD5.hexdigest(password))
             logged_in = true
             @logins[login] = TelnetUser.new(sock, encoding)
-            sleep 2
-            parse_command(login, "start")
+            if $gg.players[login].ready
+              parse_command(login, "l")
+            else
+              parse_command(login, "start")
+            end
           else
-            sleep 2
+            # bruteforce protection :D
+            sleep 3
           end
         end
 
         message = sock.gets
-        message.chomp! unless message.nil?
-        if message == "quit"
-          log "quit"
-          parse_command(login, "stop")
+        break if message.nil?
+        message.chomp!
+
+        if message.downcase == "stop" || message.downcase == "стоп"
+          sock.puts $gg.stop(login)
           sleep 1
-          @logins.delete(login)
           break
         end
-
         parse_command(login, message)
       end
-      sock.close
     rescue => detail
       log "Ошибка в главном обработчике telnet: #{$!.to_s}"+detail.backtrace.join("\n")
       fclose(login)
@@ -268,7 +285,7 @@ class TelServ
   end
 
   def log(mes)
-    $stderr.puts "\n[#{Time.now.to_s}]:"+mes
+    $stderr.puts "\n[#{Time.now.to_s}]: "+mes
   end
 
   def enc(s, encoding)
