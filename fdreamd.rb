@@ -35,21 +35,27 @@ require_relative "libs/cmdadm.rb"
 
 GC.enable
 
-jabber_enable = true # можно отключить запуск jabber
+# Settings
+if File.exist?('./config.rb')
+  load './config.rb' 
+else
+  @jabber_enable = true # можно отключить запуск jabber
+  # For send debug info
+  $MAINADDR = "BugReportJID"
+  # For send email
+  $SMTP_LOGIN = "LOGIN"
+  $SMTP_PWD = "PASS"
+  @bot_jid = "BotJID"
+  @bot_jpass = "PASS"
+end
+
+Jabber::debug = false
 
 if ARGV[0] == '--disable-jabber'
   jabber_enable = false
 end
 
 $DreamInDream = Array.new(0)
-# TODO: вынести настройки в конфиг
-# For send debug info
-$MAINADDR = "JID"
-
-# For send email
-$SMTP_LOGIN = "LOGIN"
-$SMTP_PWD = "PASS"
-#Jabber::debug = true
 
 game = Game.new
 $gg = game
@@ -57,8 +63,8 @@ $gg = game
 # Configure a public bot
 config = {
     :name => 'MUDBot',
-    :jabber_id => 'JID',
-    :password => 'PASS',
+    :jabber_id => @bot_jid,
+    :password => @bot_jpass,
     :master => game.admins,
     :is_public => true,
     :status => 'play?',
@@ -192,7 +198,7 @@ game.send { |addr, txt|
 bot.repeatcalls
 GC.start
 
-if jabber_enable
+if @jabber_enable
   bot.connect
 else
   print "Disabled jabber mode.\nWait enter for exit...\n"
