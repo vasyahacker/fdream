@@ -36,17 +36,57 @@ require_relative "libs/cmdadm.rb"
 GC.enable
 
 # Settings
-if File.exist?('./config.rb')
-  load './config.rb' 
+VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+CFG_FILE = './config.rb'
+if File.exist?(CFG_FILE)
+  load CFG_FILE 
 else
-  @jabber_enable = true # можно отключить запуск jabber
-  # For send debug info
-  $MAINADDR = "BugReportJID"
-  # For send email
-  $SMTP_LOGIN = "LOGIN"
-  $SMTP_PWD = "PASS"
-  @bot_jid = "BotJID"
-  @bot_jpass = "PASS"
+  File.open(CFG_FILE, 'w') { |cfg| 
+
+    q = "Запускать MUD через jabber?"
+    begin
+      puts "#{q} (y/n): "
+      yn = gets.chomp.downcase
+    end while not (yn =~ /^[yn]$/)
+    cfg.write("# #{q}\n@jabber_enable = "+(yn == 'y').to_s)
+
+    if yn == 'y'
+      q = "JID бота"
+      begin
+        puts q+":"
+        jid = gets.chomp
+      end while not (jid =~ VALID_EMAIL_REGEX)
+      cfg.write("\n# #{q}\n@bot_jid = '"+jid+"'")
+      
+      q = "Пароль для авторизации бота на jabber сервере"
+      puts q+":"
+      pass = gets.chomp
+      cfg.write("\n# #{q}\n@bot_jpass = '"+pass+"'")
+      
+      q = "JID для отправки отладочной информации"
+      begin
+        puts q+":"
+        jid = gets.chomp
+      end while not (jid =~ VALID_EMAIL_REGEX)
+      cfg.write("\n# #{q}\n$MAINADDR = '"+jid+"'")
+    
+    else
+      cfg.write("\n# #{q}\n@bot_jid = ''\n@bot_jpass = ''\n$MAINADDR = ''")
+    end
+    
+    q = "Логин для SMTP авторизации на серверах gmail"
+    puts q+":"
+    login = gets.chomp
+    cfg.write("\n# #{q}\n$SMTP_LOGIN = '"+login+"'")
+
+    q = "Пароль для SMTP авторизации на gmail"
+    puts q+":"
+    pass = gets.chomp
+    cfg.write("\n# #{q}\n$SMTP_PWD = '"+pass+"'")
+  }
+
+  puts "Настройки сохранены в "+CFG_FILE
+  load CFG_FILE
 end
 
 Jabber::debug = false

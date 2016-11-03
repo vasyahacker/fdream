@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Vladislav Fursov (ghostrussian@gmail.com)
 require 'digest'
 
@@ -14,7 +15,7 @@ class Registration
   attr_accessor :type, :tmpReg, :game
 
   QUESTIONS_WITH_LOGIN_PASSWORD = [
-      'Ваш email',
+      'Логин',
       'Пароль'
   ]
 
@@ -25,11 +26,14 @@ class Registration
       'Кем? (Васей)',
       'О ком? (Васе)',
       'Чей? (Васи)',
-      'Ваш пол? (М)'
+      'Ваш пол? (М или Ж)',
+      'Все верно? (Да/Нет)'
   ]
 
-  USER_EXIST = 'Пользователь с таким логином уже существует!'
-  REGISTRED_MESSAGE = 'Спасибо за регистрацию, можно начать игру с команды старт'
+  USER_EXIST = 'Пользователь с таким логином уже существует, выберите другой'
+  NAME_EXIST = 'Пользователь с таким именем уже существует, выберите другое имя'
+  REGISTRED_MESSAGE = 'Спасибо за регистрацию.'
+  REGISTRATION_ABORTED = 'Регистрация отменена.'
 
   def initialize(type, game)
     @game = game
@@ -40,30 +44,48 @@ class Registration
   def RegPlayer(id, answer, password = '')
     login = GetLogin(id)
 
-    if @game.players.key?(id) || @game.players.key?(login)
-      return USER_EXIST
-    end
-
     @tmpReg[login] = RegTmp.new unless @tmpReg.key?(login)
     n = @tmpReg[login].qn
 
-    if n-1 == 6 # sex
-      answer = '' unless answer == 'male' || answer == 'famale'
+    if n < 7 && !@game.MyNameUnique?(login, answer, true)
+      return NAME_EXIST + "\n" + QUESTIONS[n-1]
     end
 
-    @tmpReg[login].answers[n-1] = answer if n > 0
-
-    if n >= QUESTIONS.length && answer != ''
-      unless @game.check(login)
-        @game.CharCreate(login, @tmpReg[login].answers)
-        @game.players[login].addr = login
-        @game.players[login].pwd = Digest::MD5.hexdigest(password) unless password.empty?
+    if n == 7 # sex
+      case answer
+      when /^[М]$/i
+        answer = 'male'
+      when /^[Ж]$/i
+        answer = 'female'
+      else    
+        answer = ''
       end
-
-      return REGISTRED_MESSAGE
     end
 
-    n -= 1 if n > 0 && answer == ''
+    if n == 8 # confirm
+      case answer
+      when /^((д)|(да))$/i
+        unless @game.check(login)
+          @game.CharCreate(login, @tmpReg[login].answers.drop(1)) # fixme: first element is nil
+          @game.players[login].addr = login
+          @game.players[login].pwd = Digest::MD5.hexdigest(password) unless password.empty?
+        end
+
+        return REGISTRED_MESSAGE
+      when /^((н)|(нет))$/i
+        Reset(login)
+        return REGISTRATION_ABORTED
+      else    
+        answer = ''
+      end
+    end
+
+    @tmpReg[login].answers[n] = answer if n > 0 && !answer.empty?
+
+    if n >= QUESTIONS.length && !answer.empty?
+    end
+
+    n -= 1 if n > 0 && answer.empty?
 
     ask = QUESTIONS[n]
 
@@ -83,6 +105,10 @@ class Registration
 
     ask = nil
 
+    if @game.players.key?(GetLogin(answer)) && n == 1
+      return USER_EXIST
+    end
+
     @tmpReg[tempLogin].answers[n-1] = answer if n > 0 && n <= QUESTIONS_WITH_LOGIN_PASSWORD.length
 
     if n >= QUESTIONS_WITH_LOGIN_PASSWORD.length
@@ -91,7 +117,7 @@ class Registration
       answer = '' if n == QUESTIONS_WITH_LOGIN_PASSWORD.length
       ask = RegPlayer(id, answer, pass)
     else
-      n -= 1 if n > 0 && answer == ''
+      n -= 1 if n > 0 && answer.empty?
       ask = QUESTIONS_WITH_LOGIN_PASSWORD[n]
     end
 
@@ -121,5 +147,9 @@ class Registration
 
   def registred_message
     return REGISTRED_MESSAGE
+  end
+
+  def registration_aborted_message
+    return REGISTRATION_ABORTED
   end
 end

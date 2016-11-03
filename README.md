@@ -16,14 +16,22 @@ gem install bundler
 bundler
 `
 
-### запуск с jabber и telnet
-Чтобы запустить с jabber, вам нужно его настроить в файле fdreamd.rb, массив config и выполнить:
+### Настройки
+Настройки берутся из файла **config.rb**
+
+При первом запуске:
 ```bash
 ruby fdreamd.rb
 ```
-телнет запускается автоматически на порту 34567
+Будет предложено ответить на несколько вопросов, на основе которых сгенерируется файл конфигурации **config.rb**.
 
-### запуск без jabber (только telnet)
+### Запуск 
+
+```bash
+ruby fdreamd.rb
+```
+
+### Запуск без jabber (только telnet)
 Для отключения запуска jabber бота, можно запустить с параметром --disable-jabber
 ```bash
 ruby fdreamd.rb --disable-jabber
@@ -31,4 +39,4 @@ ruby fdreamd.rb --disable-jabber
 телнет запускается автоматически на порту 34567
 
 ## Рекомендации
-В данный момент установленно, что Telnet работает хорошо, через tt++ на macOS
+В данный момент установленно, что Telnet режим работает хорошо, через [tintin++](http://tintin.sourceforge.net/) или через [netcat](https://ru.wikipedia.org/wiki/Netcat).

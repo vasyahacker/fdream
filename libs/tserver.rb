@@ -185,12 +185,12 @@ class TelServ
           encoding_selected = true
         end
         until logged_in
-          sock.write("\r\n"+ denc('Введите ваш jabber id или email для входа', encoding)+"\r\n")
+          sock.write("\r\n"+ denc('Введите ваш jabber id или логин для входа', encoding)+"\r\n")
           sock.write(denc('Не зарегестрированны? Введите new для регистрации', encoding)+"\r\n")
 
           login = sock.gets
           login.chomp! unless login.nil?
-
+          login = enc(login, encoding)
           if (login=='new')
             type = 'telnet'
             reg = Registration.new(type, $gg)
@@ -202,7 +202,12 @@ class TelServ
             answer = ''
             loop_id = 0
             loop {
-              question = reg.RegPlayerWithLoginAndPassword(temp_id, answer)
+              question = denc(reg.RegPlayerWithLoginAndPassword(temp_id, answer),encoding)
+              if question == reg.registration_aborted_message
+                sock.write question
+                break
+              end
+
               sock.write(question + ': ')
 
               if question == reg.registred_message
@@ -211,6 +216,7 @@ class TelServ
               end
 
               answer = sock.gets.chomp!
+              answer = enc(answer,encoding)
 
               login = answer if question == reg.questions_with_login_password_messages[0]
               password = answer if question == reg.questions_with_login_password_messages[1]
@@ -219,8 +225,8 @@ class TelServ
             sock.write denc("\nПароль: ", encoding)
             sock.write colorize(0, "", "fg")
             sock.write colorize(0, "", "bg")
-            password = sock.gets
-            password.chomp!
+            password = sock.gets.chomp
+            password = enc(password, encoding)
           end
 
           sock.write nocolor ""
@@ -243,7 +249,7 @@ class TelServ
         break if message.nil?
         message.chomp!
 
-        if message.downcase == "stop" || message.downcase == "стоп"
+        if enc(message, @logins[login].enc) =~ /^((stop)|(стоп))$/i
           sock.puts $gg.stop(login)
           sleep 1
           break
