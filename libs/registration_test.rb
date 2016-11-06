@@ -23,7 +23,8 @@ class RegistrationTest < Test::Unit::TestCase
     assert_equal(@reg.questions_messages[4], @reg.RegPlayer(@id, 'Васей'), '5 question')
     assert_equal(@reg.questions_messages[5], @reg.RegPlayer(@id, 'Васе'), '6 question')
     assert_equal(@reg.questions_messages[6], @reg.RegPlayer(@id, 'Васи'), '7 question')
-    assert_equal(@reg.registred_message, @reg.RegPlayer(@id, 'male'), '8 question')
+    assert_equal(@reg.questions_messages[7], @reg.RegPlayer(@id, 'М'), '8 question')
+    assert_equal(@reg.registred_message, @reg.RegPlayer(@id, 'Да'), '8 question')
 
     assert_equal(true, @game.players.key?(@reg.GetLogin(@id)))
 
@@ -38,6 +39,25 @@ class RegistrationTest < Test::Unit::TestCase
     assert_equal(nil, @game.players[@reg.GetLogin(@id)].pwd)
   end
 
+  def test_reg_player_cancel
+    assert_equal(@reg.questions_messages[0], @reg.RegPlayer(@id, ''), '1 question')
+    assert_equal(@reg.questions_messages[1], @reg.RegPlayer(@id, 'Вася'), '2 question')
+    assert_equal(@reg.questions_messages[2], @reg.RegPlayer(@id, 'Васю'), '3 question')
+    assert_equal(@reg.questions_messages[3], @reg.RegPlayer(@id, 'Васе'), '4 question')
+    assert_equal(@reg.questions_messages[4], @reg.RegPlayer(@id, 'Васей'), '5 question')
+    assert_equal(@reg.questions_messages[5], @reg.RegPlayer(@id, 'Васе'), '6 question')
+    assert_equal(@reg.questions_messages[6], @reg.RegPlayer(@id, 'Васи'), '7 question')
+    assert_equal(@reg.questions_messages[7], @reg.RegPlayer(@id, 'М'), '8 question')
+    assert_equal(@reg.registration_aborted_message, @reg.RegPlayer(@id, 'Нет'), '8 question')
+
+    assert_equal(false, @game.players.key?(@reg.GetLogin(@id)))
+
+    assert_equal(@reg.questions_messages[0], @reg.RegPlayer(@id, ''), '1 question')
+    assert_equal(@reg.questions_messages[1], @reg.RegPlayer(@id, 'Вася'), '2 question')
+    assert_equal(@reg.questions_messages[2], @reg.RegPlayer(@id, 'Васю'), '3 question')
+  end
+
+
   def test_reg_player_sex_check
     assert_equal(@reg.questions_messages[0], @reg.RegPlayer(@id, ''), '1 question')
     assert_equal(@reg.questions_messages[1], @reg.RegPlayer(@id, 'Вася'), '2 question')
@@ -48,7 +68,8 @@ class RegistrationTest < Test::Unit::TestCase
     assert_equal(@reg.questions_messages[6], @reg.RegPlayer(@id, 'Васи'), '7 question')
     assert_equal(@reg.questions_messages[6], @reg.RegPlayer(@id, 'test'), '8 question')
     assert_equal(@reg.questions_messages[6], @reg.RegPlayer(@id, 'qwert'), '9 question')
-    assert_equal(@reg.registred_message, @reg.RegPlayer(@id, 'male'), '10 question')
+    assert_equal(@reg.questions_messages[7], @reg.RegPlayer(@id, 'М'), '10 question')
+    assert_equal(@reg.registred_message, @reg.RegPlayer(@id, 'Да'), '11 question')
 
     assert_equal(true, @game.players.key?(@reg.GetLogin(@id)))
   end
@@ -117,7 +138,8 @@ class RegistrationTest < Test::Unit::TestCase
     assert_equal(@reg.questions_messages[4], @reg.RegPlayerWithLoginAndPassword(@id, 'Васей'), '5 question')
     assert_equal(@reg.questions_messages[5], @reg.RegPlayerWithLoginAndPassword(@id, 'Васе'), '6 question')
     assert_equal(@reg.questions_messages[6], @reg.RegPlayerWithLoginAndPassword(@id, 'Васи'), '7 question')
-    assert_equal(@reg.registred_message, @reg.RegPlayerWithLoginAndPassword(@id, 'male'), '8 question')
+    assert_equal(@reg.questions_messages[7], @reg.RegPlayerWithLoginAndPassword(@id, 'М'), '8 question')
+    assert_equal(@reg.registred_message, @reg.RegPlayerWithLoginAndPassword(@id, 'Да'), '9 question')
 
     assert_equal(true, @game.players.key?(@reg.GetLogin(login)))
 
@@ -150,11 +172,10 @@ class RegistrationTest < Test::Unit::TestCase
   end
 
   def test_user_exist_with_login_pass
-    login = "petya@#{@type}"
+    login = "petya"
 
     assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login question')
-    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, login), 'pass question')
-    assert_equal(@reg.user_exist_message, @reg.RegPlayerWithLoginAndPassword(@id, '123456'))
+    assert_equal(@reg.user_exist_message, @reg.RegPlayerWithLoginAndPassword(@id, login))
   end
 
   # prepare for test

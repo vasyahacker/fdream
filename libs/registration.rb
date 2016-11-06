@@ -66,14 +66,14 @@ class Registration
       case answer
       when /^((д)|(да))$/i
         unless @game.check(login)
-          @game.CharCreate(login, @tmpReg[login].answers.drop(1)) # fixme: first element is nil
           @game.players[login].addr = login
           @game.players[login].pwd = Digest::MD5.hexdigest(password) unless password.empty?
+          @game.CharCreate(login, @tmpReg[login].answers.drop(1)) # fixme: first element is nil
         end
 
         return REGISTRED_MESSAGE
       when /^((н)|(нет))$/i
-        Reset(login)
+        Reset(id)
         return REGISTRATION_ABORTED
       else    
         answer = ''
