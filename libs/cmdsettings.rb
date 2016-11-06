@@ -22,13 +22,15 @@ def LoadSettingsCmd(bot, game, type)
 
       oldPlayer = game.players[sender].clone if game.check(sender)
 
-      game.CharCreate(sender, message.split(/\,\s?/)) # unless game.check(sender)
+      return @descr['namealreadyexits'] if game.CharCreate(sender, message.split(/\,\s?/)) == @descr['namealreadyexits']
 
       if game.check(sender)
         newPlayer = game.players[sender]
         texts = game.TextBuild(game.descr['CharRename'], oldPlayer, newPlayer)
         game.showtoall(sender, texts[1])
         texts[0]
+      else
+        @descr['gogogo']
       end
     else
       game.descr['CharCreateError'] # unless game.check(sender)
