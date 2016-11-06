@@ -226,7 +226,7 @@ class Game
         showtoall(sender, out[1], p.where)
         @db.updateplayer(sender, p)
         return out[0]
-      when /^([[:alnum:]]{3,30}):(.+)$/m
+      when /^(#{USER_NAME_REGEX}):(.+)$/m
         sms = $2
         sender2 = GetAddrByName(sender, $1)
         return @descr['unknownname'] unless sender2
@@ -310,9 +310,9 @@ class Game
     l = @locations[p.where]
     all = false
     case message.strip
-      when /^([[:alnum:]]{3,30})$/m
+      when /^(#{USER_NAME_REGEX})$/m
         name = $1
-      when /all\s([[:alnum:]]{3,30})/i
+      when /all\s(#{USER_NAME_REGEX})/i
         name = $1
         all = true
     end
@@ -454,7 +454,7 @@ class Game
         dir = 'u'
       when /^((вн)|(вниз))$/i
         dir = 'd'
-      when /^[[:alnum:]]{3,30}$/i
+      when /^#{USER_NAME_REGEX}$/i
         sender2 = GetAddrByName(sender, message)
         return @descr['unknownname'] unless sender2
         p2 = @players[sender2]
@@ -493,7 +493,7 @@ class Game
       when nil
         out = TextBuild(@descr[soc+rnd], p) if message.nil? && @descr.present?(soc+rnd)
 
-      when /^([[:alnum:]]{3,30})$/i
+      when /^(#{USER_NAME_REGEX})$/i
         name = $1
         sender2 = GetAddrByName(sender, name)
         if sender2 != false && @descr.present?(soc+rnd+"toPlayer")
@@ -509,7 +509,7 @@ class Game
 
           return @descr['error'] unless @descr.present?(soc+rnd+"AndSay")
         end
-      when /([[:alnum:]]{3,30}):\s*(.+)/m
+      when /(#{USER_NAME_REGEX}):\s*(.+)/m
         name = $1
         mess = (p.realise?(@time, l.power_place)) ? $2 : rndmes($2)
         sender2 = GetAddrByName(sender, name)
@@ -549,10 +549,10 @@ class Game
     return @descr['nosens'] if p.sensibleness < @need
     l = @locations[p.where]
     return @descr['youneedmailbox'] unless l.name == 'Почта'
-    message =~ /([[:alnum:]]{3,30}):\s*(.*)/m
+    message =~ /(#{USER_NAME_REGEX}):\s*(.*)/m
     name = $1
     mess = $2
-#message.sub(/^([[:alnum:]]{3,30}):\s/,'')
+#message.sub(/^(#{USER_NAME_REGEX}):\s/,'')
 #message.sub(/:((\s)|(.))+/i,'')
     sender2 = GetAddrByName(sender, name)
     return @descr['unknownname'] unless sender2
@@ -568,7 +568,7 @@ class Game
   def GiveObject2Player(sender, message)
     player = @players[sender]
     #return @descr['nosens'] if player.sensibleness < @need
-    id = message.sub(/\s([[:alnum:]]{3,30})$/i, '').to_i
+    id = message.sub(/\s(#{USER_NAME_REGEX})$/i, '').to_i
     name = message.sub(/^[0-9]{1,3}\s/, '')
     sender2 = GetAddrByName(sender, name)
     return @descr['unknownname'] unless sender2
@@ -1753,7 +1753,7 @@ class Game
     end
 
     case message
-      when /^([[:alnum:]]{3,30}):\s?(.+\?)$/m
+      when /^(#{USER_NAME_REGEX}):\s?(.+\?)$/m
         name = $1
         mess = $2
         sender2 = GetAddrByName(sender, name)
@@ -1765,7 +1765,7 @@ class Game
         else
           out = TextBuild(@descr.build("Say"+rnd, [message]), p)
         end
-      when /^([[:alnum:]]{3,30}):\s?(.+)/m
+      when /^(#{USER_NAME_REGEX}):\s?(.+)/m
         name = $1
         mess = $2
         sender2 = GetAddrByName(sender, name)

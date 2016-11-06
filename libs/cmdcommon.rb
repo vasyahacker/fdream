@@ -4,7 +4,7 @@ def LoadCommonCmd(bot, game, type)
       :type => type,
       :syntax => 'цель | target <имя>',
       :description => 'прицелиться, нацелиться',
-      :regex => /^((цель)|(target))\s+([[:alnum:]]{3,30})$/i,
+      :regex => /^((цель)|(target))\s+(#{USER_NAME_REGEX})$/i,
       :is_public => true
   ) do |sender, message|
     game.Target(sender, message) if game.check(sender)
@@ -162,19 +162,19 @@ def LoadCommonCmd(bot, game, type)
       :type => type,
       :syntax => 'look to <player>',
       :description => 'Посмотреть на другого игрока или на руки или на NPC',
-      :regex => /^look to ([[:alnum:]]{3,30})$/i,
+      :regex => /^look to (#{USER_NAME_REGEX})$/i,
       :alias => [{:type => type,
-                  :syntax => 'l', :regex => /^l ([[:alnum:]]{1,30})$/i},
+                  :syntax => 'l', :regex => /^l (#{USER_NAME_REGEX})$/i},
                  {:type => type,
-                  :syntax => 'см <имя>', :regex => /^см ([[:alnum:]]{1,30})$/i},
+                  :syntax => 'см <имя>', :regex => /^см (#{USER_NAME_REGEX})$/i},
                  {:type => type,
-                  :syntax => 'см на <имя>', :regex => /^см на ([[:alnum:]]{1,30})$/i},
+                  :syntax => 'см на <имя>', :regex => /^см на (#{USER_NAME_REGEX})$/i},
                  {:type => type,
-                  :syntax => 'осмотреть <имя>', :regex => /^осмотреть ([[:alnum:]]{1,30})$/i},
+                  :syntax => 'осмотреть <имя>', :regex => /^осмотреть (#{USER_NAME_REGEX})$/i},
                  {:type => type,
-                  :syntax => 'смотреть на <имя>', :regex => /^смотреть на ([[:alnum:]]{1,30})$/i},
+                  :syntax => 'смотреть на <имя>', :regex => /^смотреть на (#{USER_NAME_REGEX})$/i},
                  {:type => type,
-                  :syntax => 'посмотреть на <имя>', :regex => /^посмотреть на ([[:alnum:]]{1,30})$/i}],
+                  :syntax => 'посмотреть на <имя>', :regex => /^посмотреть на (#{USER_NAME_REGEX})$/i}],
       :is_public => true
   ) do |sender, message|
     if game.check(sender)

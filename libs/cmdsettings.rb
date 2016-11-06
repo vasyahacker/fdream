@@ -9,7 +9,6 @@ def LoadSettingsCmd(bot, game, type)
 "charcreate ваше имя, имя отвечающее на вопрос кого позвать?, имя отвечающее на вопрос кому сказать?, имя отвечающее на вопрос с кем встретиться?, имя отвечающее на вопрос о ком рассказать?, имя отвечающее на вопрос чей трансглюкатор?, male или female".
 
 Где male female - задает ваш пол - мужской или женский.
-Обратите внимание на то, что пробелы и в имени не допускаются. 
 Имя должно состоять не менее чем из 3 букв.
 
 Пример: charcreate Петя, Петю, Пете, Петей, Пете, Пети, male
@@ -19,7 +18,7 @@ def LoadSettingsCmd(bot, game, type)
       :regex => /^(charcreate|charrename) .*$/i,
       :is_public => true
   ) do |sender, message|
-    if message =~ /^[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?(male|female)$/
+    if message =~ /^#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?(male|female)$/
 
       oldPlayer = game.players[sender].clone if game.check(sender)
 

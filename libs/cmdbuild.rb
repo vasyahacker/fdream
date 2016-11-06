@@ -87,7 +87,7 @@ def LoadBuildCmd(bot, game, type)
       :type => type,
       :syntax => 'lchown [all] <имя>',
       :description => 'назначить владельца текущей локации (all - передать все локации)',
-      :regex => /^lchown\s(all\s)?[[:alnum:]]{3,30}$/i,
+      :regex => /^lchown\s(all\s)?#{USER_NAME_REGEX}$/i,
       :is_public => true
   ) do |sender, message|
     game.lchown(sender, message) if game.check(sender)

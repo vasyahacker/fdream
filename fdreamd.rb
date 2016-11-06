@@ -37,6 +37,8 @@ GC.enable
 
 # Settings
 VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+USER_NAME_REGEX = '[[:alnum:]|[:blank:]]{3,30}'
+
 CFG_FILE = './config.rb'
 if File.exist?(CFG_FILE)
   load CFG_FILE 
@@ -155,7 +157,7 @@ LoadSocCmd(bot, game, "социалы")
 #bot.add_command(
 #  :syntax      => 'follow | fol | следовать за| след за <имя>',
 #  :description => "следовать за игроком - то есть вы будите автоматически двигаться за ним куда бы он не направился",
-#  :regex       => /^(([Сс]лед)|([Сс]ледовать)|([Сс]лед за)|([Сс]ледовать за)|(fol)|(follow))\s([[:alnum:]]{3,30})$/i,
+#  :regex       => /^(([Сс]лед)|([Сс]ледовать)|([Сс]лед за)|([Сс]ледовать за)|(fol)|(follow))\s(#{USER_NAME_REGEX})$/i,
 #  :is_public   => false
 #) do |sender, message|
 # 	game.Follow(sender,message.sub(/^за\s/,'')) if game.check(sender)

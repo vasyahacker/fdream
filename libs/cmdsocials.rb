@@ -17,7 +17,7 @@ def LoadSocCmd(bot, game, type)
       :type => type,
       :syntax => 'поцеловать :-* <имя>',
       :description => 'Поцеловать игрока',
-      :regex => /^((поцеловать)|(:\-\*))\s+[[:alnum:]]{3,30}$/im,
+      :regex => /^((поцеловать)|(:\-\*))\s+#{USER_NAME_REGEX}$/im,
       :is_public => true
   ) do |sender, message|
     game.Social('Kiss', sender, message) if game.check(sender)
@@ -57,7 +57,7 @@ def LoadSocCmd(bot, game, type)
       :type => type,
       :syntax => 'указать | показать на <имя>|<направление>',
       :description => 'указать на игрока или в направлении',
-      :regex => /^(указать)|(показать)( на)? (([[:alnum:]]{3,30})|(север)|(юг)|(запад)|(восток)|(верх)|(вверх)|(вниз)|(с)|(ю)|(з)|(в)|(вв)|(вн))$/i,
+      :regex => /^(указать)|(показать)( на)? ((#{USER_NAME_REGEX})|(север)|(юг)|(запад)|(восток)|(верх)|(вверх)|(вниз)|(с)|(ю)|(з)|(в)|(вв)|(вн))$/i,
       :is_public => true
   ) do |sender, message|
     game.SpecifyTo(sender, message.gsub(/(на )/i, '').strip) if game.check(sender)
@@ -67,7 +67,7 @@ def LoadSocCmd(bot, game, type)
       :type => type,
       :syntax => 'обнять <имя>[: текст]',
       :description => 'обнять игрока',
-      :regex => /^обнять [[:alnum:]]{3,30}:?\s?.*$/im,
+      :regex => /^обнять #{USER_NAME_REGEX}:?\s?.*$/im,
       :is_public => true
   ) do |sender, message|
     game.Social('Clasp', sender, message) if game.check(sender)
@@ -138,7 +138,7 @@ def LoadSocCmd(bot, game, type)
       :type => type,
       :syntax => 'хлопнуть|похлопать <имя>[:<текст>]',
       :description => 'Похлопать игрока по плечу',
-      :regex => /^(хлопнуть)|(похлопать)\s[[:alnum:]]{3,30}:?\s?.*$/im,
+      :regex => /^(хлопнуть)|(похлопать)\s#{USER_NAME_REGEX}:?\s?.*$/im,
       :is_public => true
   ) do |sender, message|
     game.Social('Slap', sender, message) if game.check(sender)
@@ -158,7 +158,7 @@ def LoadSocCmd(bot, game, type)
       :type => type,
       :syntax => 'whisper шепот шепнуть шептать <имя>:<текст>',
       :description => 'шепот (приватное сообщение)',
-      :regex => /^((whisper)|(шепот)|(шепнуть)|(шептать))\s[[:alnum:]]{3,30}:\s?.+$/im,
+      :regex => /^((whisper)|(шепот)|(шепнуть)|(шептать))\s#{USER_NAME_REGEX}:\s?.+$/im,
       :is_public => true
   ) do |sender, message|
     game.Social('Whisper', sender, message) if game.check(sender)

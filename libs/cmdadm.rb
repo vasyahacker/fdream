@@ -5,7 +5,7 @@ def LoadAdmCmd(bot, game, type)
       :type => type,
       :syntax => 'призвать <имя>',
       :description => 'призвать игрока',
-      :regex => /^призвать\s[[:alnum:]]{3,30}$/i,
+      :regex => /^призвать\s#{USER_NAME_REGEX}$/i,
       :is_public => true
   ) do |sender, message|
     game.CallPlayer(sender, message) if game.check(sender)
@@ -25,7 +25,7 @@ def LoadAdmCmd(bot, game, type)
       :type => type,
       :syntax => 'pinfo <name>',
       :description => 'player info',
-      :regex => /^[Pp]info\s+[[:alnum:]]{3,30}$/i,
+      :regex => /^[Pp]info\s+#{USER_NAME_REGEX}$/i,
       :is_public => false
   ) do |sender, message|
     game.getplayerinfo(message) if game.check(sender)
@@ -35,7 +35,7 @@ def LoadAdmCmd(bot, game, type)
       :type => type,
       :syntax => 'paddr <name>',
       :description => 'get player address',
-      :regex => /^[Pp]addr\s+[[:alnum:]]{3,30}$/i,
+      :regex => /^[Pp]addr\s+#{USER_NAME_REGEX}$/i,
       :is_public => false
   ) do |sender, message|
     game.getplayeraddress(message) if game.check(sender)
@@ -310,7 +310,7 @@ def LoadAdmCmd(bot, game, type)
       :type => type,
       :syntax => 'psavexml <имя игрока>',
       :description => 'Сохраняет все локации игрока в файлы',
-      :regex => /^psavexml\s+[[:alnum:]]{3,30}$/i,
+      :regex => /^psavexml\s+#{USER_NAME_REGEX}$/i,
       :is_public => false
   ) do |sender, message|
     game.psavexml(sender, message) if game.check(sender)
