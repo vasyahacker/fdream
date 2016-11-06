@@ -3,7 +3,7 @@ def LoadSettingsCmd(bot, game, type)
 
   bot.add_command(
       :type => type,
-      :syntax => 'charcreate <string>',
+      :syntax => 'charcreate <string> или charrename <string>',
       :description => 'Чтобы войти в игру, нужно задать своему персонажу некоторые параметры.
 Для начала введите команду:
 "charcreate ваше имя, имя отвечающее на вопрос кого позвать?, имя отвечающее на вопрос кому сказать?, имя отвечающее на вопрос с кем встретиться?, имя отвечающее на вопрос о ком рассказать?, имя отвечающее на вопрос чей трансглюкатор?, male или female".
@@ -16,13 +16,23 @@ def LoadSettingsCmd(bot, game, type)
 
 После этого можно начинать играть с команды start.
 Эта команда так же используется для смены имени.',
-      :regex => /^charcreate .*$/i,
+      :regex => /^(charcreate|charrename) .*$/i,
       :is_public => true
   ) do |sender, message|
     if message =~ /^[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?[[:alnum:]]{3,30}\,\s?(male|female)$/
-      game.CharCreate(sender, message.split(/\,\s?/)) unless game.check(sender)
+
+      oldPlayer = game.players[sender].clone if game.check(sender)
+
+      game.CharCreate(sender, message.split(/\,\s?/)) # unless game.check(sender)
+
+      if game.check(sender)
+        newPlayer = game.players[sender]
+        texts = game.TextBuild(game.descr['CharRename'], oldPlayer, newPlayer)
+        game.showtoall(sender, texts[1])
+        texts[0]
+      end
     else
-      game.descr['CharCreateError'] unless game.check(sender)
+      game.descr['CharCreateError'] # unless game.check(sender)
     end
   end
 

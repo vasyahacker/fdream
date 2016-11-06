@@ -510,6 +510,7 @@ INSERT INTO "descriptions" VALUES('psavexmlmail','Смотрите аттач. �
 INSERT INTO "descriptions" VALUES('xmlsendok','Локации в виде XML файлов отправлены вам на электронную почту.');
 INSERT INTO "descriptions" VALUES('TargetToPlayer','Ты концентрируешься на ~~komu~~.)><(~kto~ пристально смотрит на ~~kogo~~.)><(~kto~ пристально смотрит на тебя.');
 INSERT INTO "descriptions" VALUES('alreadytarget','Уже!');
+INSERT INTO "descriptions" VALUES('CharRename','Ты сменил[а] имя на ~~kto~~!)><(Теперь ~kogo~, зовут ~~kto~~, а имя ~kto~ стало свободно!');
 CREATE TABLE chars (
     	    id integer PRIMARY KEY AUTOINCREMENT,
 	    addr varchar2(63) UNIQUE,
