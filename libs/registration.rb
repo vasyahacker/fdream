@@ -41,6 +41,10 @@ class Registration
     @tmpReg = {}
   end
 
+  def self.GetLoginOfType(id, type)
+    return "#{id}@#{type}"
+  end
+
   def RegPlayer(id, answer, password = '')
     login = GetLogin(id)
 
@@ -94,7 +98,7 @@ class Registration
   end
 
   def GetLogin(id)
-    return "#{id}@#{@type}"
+    return Registration.GetLoginOfType(id, @type)
   end
 
   def RegPlayerWithLoginAndPassword(tmpId, answer)

@@ -170,7 +170,6 @@ class TelServ
 
     login = ""
     password = ""
-    reg = Registration.new(@type, $gg)
 
     begin
       loop do
@@ -195,6 +194,7 @@ class TelServ
           login.chomp! unless login.nil?
           login = enc(login, encoding)
           if (login=='new')
+            reg = Registration.new(@type, $gg)
 
             sock.write("\r\n"+denc('Для входа необходимо пройти небольшую процедуру регистрации.', encoding)+"\r\n")
 
@@ -231,7 +231,7 @@ class TelServ
           end
 
           sock.write nocolor ""
-          login = reg.GetLogin(login) if $gg.players.key?(reg.GetLogin(login))
+          login = Registration.GetLoginOfType(login, @type) if $gg.players.key?(Registration.GetLoginOfType(login, @type))
           if $gg.players.key?(login) && $gg.players[login].pwd == Digest::MD5.hexdigest(password) 
             logged_in = true
             @logins[login] = TelnetUser.new(sock, encoding)
