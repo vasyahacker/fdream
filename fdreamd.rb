@@ -36,7 +36,6 @@ require_relative "libs/cmdadm.rb"
 GC.enable
 
 # Settings
-REVISION = `git log --pretty=format:'%h - %ad: %s' -n 1`
 VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 USER_NAME_REGEX = '[[:alnum:]|[:blank:]]{3,30}'
 

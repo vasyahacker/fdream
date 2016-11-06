@@ -132,6 +132,6 @@ def LoadBaseCmd(bot, game, type)
       :regex => /^revision$/,
       :is_public => true
   ) do |sender, message|
-    "REVISION: #{REVISION}"
+    "REVISION: #{`git log --pretty=format:'%h - %ar(%ad): %s' -n 1`}"
   end
 end
