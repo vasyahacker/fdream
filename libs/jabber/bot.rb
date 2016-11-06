@@ -234,10 +234,10 @@ module Jabber
 #		 end
       if to.is_a?(Array)
         to.each { |t|
-          @jabber.deliver(t, CGI::unescapeHTML(message.to_s))
+          @jabber.deliver(t, CGI::unescapeHTML(message.to_s)) if t =~ VALID_EMAIL_REGEX
         }
       else
-        @jabber.deliver(to, CGI::unescapeHTML(message.to_s))
+        @jabber.deliver(to, CGI::unescapeHTML(message.to_s)) if to =~ VALID_EMAIL_REGEX
       end
     end
 
