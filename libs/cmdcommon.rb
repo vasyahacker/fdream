@@ -158,23 +158,24 @@ def LoadCommonCmd(bot, game, type)
     game.invite(sender, message) if game.check(sender)
   end
 
+  lockRegex = USER_NAME_REGEX.gsub(/\{[0-9]{1,3},([0-9]{1,3})\}/i) {"{1,#{$1}}"}
   bot.add_command(
       :type => type,
       :syntax => 'look to <player>',
       :description => 'Посмотреть на другого игрока или на руки или на NPC',
-      :regex => /^look to (#{USER_NAME_REGEX})$/i,
+      :regex => /^look to (#{lockRegex})$/i,
       :alias => [{:type => type,
-                  :syntax => 'l', :regex => /^l (#{USER_NAME_REGEX})$/i},
+                  :syntax => 'l', :regex => /^l (#{lockRegex})$/i},
                  {:type => type,
-                  :syntax => 'см <имя>', :regex => /^см (#{USER_NAME_REGEX})$/i},
+                  :syntax => 'см <имя>', :regex => /^см (#{lockRegex})$/i},
                  {:type => type,
-                  :syntax => 'см на <имя>', :regex => /^см на (#{USER_NAME_REGEX})$/i},
+                  :syntax => 'см на <имя>', :regex => /^см на (#{lockRegex})$/i},
                  {:type => type,
-                  :syntax => 'осмотреть <имя>', :regex => /^осмотреть (#{USER_NAME_REGEX})$/i},
+                  :syntax => 'осмотреть <имя>', :regex => /^осмотреть (#{lockRegex})$/i},
                  {:type => type,
-                  :syntax => 'смотреть на <имя>', :regex => /^смотреть на (#{USER_NAME_REGEX})$/i},
+                  :syntax => 'смотреть на <имя>', :regex => /^смотреть на (#{lockRegex})$/i},
                  {:type => type,
-                  :syntax => 'посмотреть на <имя>', :regex => /^посмотреть на (#{USER_NAME_REGEX})$/i}],
+                  :syntax => 'посмотреть на <имя>', :regex => /^посмотреть на (#{lockRegex})$/i}],
       :is_public => true
   ) do |sender, message|
     if game.check(sender)
