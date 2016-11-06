@@ -99,6 +99,8 @@ class TelServ
 
   def initialize(jb, port=34567, host='0.0.0.0', maxcon=18)
     @logins = {}
+    @type = 'telnet'
+
     #@encoding = Encodings[1]
     #server = TCPServer.new(host, port)
     @jb = jb
@@ -168,6 +170,7 @@ class TelServ
 
     login = ""
     password = ""
+    reg = Registration.new(@type, $gg)
 
     begin
       loop do
@@ -192,8 +195,6 @@ class TelServ
           login.chomp! unless login.nil?
           login = enc(login, encoding)
           if (login=='new')
-            type = 'telnet'
-            reg = Registration.new(type, $gg)
 
             sock.write("\r\n"+denc('Для входа необходимо пройти небольшую процедуру регистрации.', encoding)+"\r\n")
 
@@ -208,17 +209,17 @@ class TelServ
                 break
               end
 
-              sock.write(question + ': ')
-
               if question == reg.registred_message
                 sock.write(question)
                 break
               end
 
+              sock.write(question + ': ')
+
               answer = sock.gets.chomp!
               answer = enc(answer,encoding)
 
-              login = answer if question == reg.questions_with_login_password_messages[0]
+              login = answer if question == reg.questions_with_login_password_messages[0] || question == reg.user_exist_message
               password = answer if question == reg.questions_with_login_password_messages[1]
             }
           else
@@ -230,7 +231,7 @@ class TelServ
           end
 
           sock.write nocolor ""
-          login = login+'@telnet' if $gg.players.key?(login+'@telnet')
+          login = reg.GetLogin(login) if $gg.players.key?(reg.GetLogin(login))
           if $gg.players.key?(login) && $gg.players[login].pwd == Digest::MD5.hexdigest(password) 
             logged_in = true
             @logins[login] = TelnetUser.new(sock, encoding)
