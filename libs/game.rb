@@ -1010,6 +1010,7 @@ class Game
         @players[sender].createdate = Time.now.to_i
         id = @db.addplayer(sender, @players[sender])
         @players[sender].id = id
+        @players[sender].addr = sender
       end
 
       @players[sender].lat = @time
