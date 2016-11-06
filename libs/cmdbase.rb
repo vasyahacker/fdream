@@ -126,4 +126,12 @@ def LoadBaseCmd(bot, game, type)
     game.look(sender) if game.check(sender)
   end
 
+  bot.add_command(
+      :type => type,
+      :syntax => 'revision',
+      :regex => /^revision$/,
+      :is_public => true
+  ) do |sender, message|
+    "REVISION: #{REVISION}"
+  end
 end

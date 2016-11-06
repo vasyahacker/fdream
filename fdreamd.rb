@@ -36,6 +36,7 @@ require_relative "libs/cmdadm.rb"
 GC.enable
 
 # Settings
+REVISION = `git log --pretty=format:'%h' -n 1`
 VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 USER_NAME_REGEX = '[[:alnum:]|[:blank:]]{3,30}'
 
@@ -247,4 +248,3 @@ else
   print STDIN.gets.chomp
   print "Shutdown...\n"
 end
-
