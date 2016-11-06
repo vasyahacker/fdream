@@ -357,8 +357,11 @@ module Jabber
     # You can use this method if you want to manually add friends and still
     # have the message queued for later delivery.
     def deliver_deferred(jid, message, type)
-      msg = {:to => jid, :message => message, :type => type}
-      queue(:pending_messages) << [msg]
+      msg = Message.new(jid)
+      msg.type = type
+      msg.body = message
+      send!(msg)
+      # queue(:pending_messages) << [msg]
     end
 
     private
