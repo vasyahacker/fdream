@@ -46,7 +46,7 @@ else
     q = "Запускать MUD через jabber?"
     begin
       puts "#{q} (y/n): "
-      yn = gets.chomp.downcase
+      yn = STDIN.gets.chomp.downcase
     end while not (yn =~ /^[yn]$/)
     cfg.write("# #{q}\n@jabber_enable = "+(yn == 'y').to_s)
 
