@@ -7,7 +7,8 @@ class RegistrationTest < Test::Unit::TestCase
   def setup
     @type = 'test'
     @game = prepareGame()
-    @reg = Registration.new(@type, @game)
+    user_name_regex = '[[:alnum:]|[:blank:]]{3,30}'
+    @reg = Registration.new(@type, @game, user_name_regex)
     @id = 'tester'
   end
 
@@ -176,6 +177,11 @@ class RegistrationTest < Test::Unit::TestCase
 
     assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login question')
     assert_equal(@reg.user_exist_message, @reg.RegPlayerWithLoginAndPassword(@id, login))
+  end
+
+  def test_check_allowed_name
+    assert_equal(@reg.questions_messages[0], @reg.RegPlayer(@id, ''), '1 question')
+    assert_equal("#{@reg.characters_are_not_allowed_message}\n#{@reg.questions_messages[0]}", @reg.RegPlayer(@id, 'Вася@Вася'), '2 question')
   end
 
   # prepare for test

@@ -34,11 +34,13 @@ class Registration
   NAME_EXIST = 'Пользователь с таким именем уже существует, выберите другое имя'
   REGISTRED_MESSAGE = 'Спасибо за регистрацию.'
   REGISTRATION_ABORTED = 'Регистрация отменена.'
+  CHARACTERS_ARE_NOT_ALLOWED_MESSAGE = 'Пожалуйста, задайте нормальное имя.'
 
-  def initialize(type, game)
+  def initialize(type, game, user_name_regex=USER_NAME_REGEX)
     @game = game
     @type = type
     @tmpReg = {}
+    @user_name_regex = user_name_regex
   end
 
   def self.GetLoginOfType(id, type)
@@ -57,32 +59,38 @@ class Registration
 
     if n == 7 # sex
       case answer
-      when /^[М]$/i
-        answer = 'male'
-      when /^[Ж]$/i
-        answer = 'female'
-      else    
-        answer = ''
+        when /^[М]$/i
+          answer = 'male'
+        when /^[Ж]$/i
+          answer = 'female'
+        else
+          answer = ''
       end
     end
 
     if n == 8 # confirm
       case answer
-      when /^((д)|(да))$/i
-        unless @game.check(login)
-          @game.players[login].addr = login
-          @game.players[login].pwd = Digest::MD5.hexdigest(password) unless password.empty?
-          @game.CharCreate(login, @tmpReg[login].answers.drop(1)) # fixme: first element is nil
-        end
+        when /^((д)|(да))$/i
+          unless @game.check(login)
+            @game.players[login].addr = login
+            @game.players[login].pwd = Digest::MD5.hexdigest(password) unless password.empty?
+            @game.CharCreate(login, @tmpReg[login].answers.drop(1)) # fixme: first element is nil
+          end
 
-        return REGISTRED_MESSAGE
-      when /^((н)|(нет))$/i
-        Reset(id)
-        return REGISTRATION_ABORTED
-      else    
-        answer = ''
+          return REGISTRED_MESSAGE
+        when /^((н)|(нет))$/i
+          Reset(id)
+          return REGISTRATION_ABORTED
+        else
+          answer = ''
       end
     end
+
+    # check allowed name
+    if !(answer =~ /^#{@user_name_regex}$/i) && n > 0 && !answer.empty?
+      return CHARACTERS_ARE_NOT_ALLOWED_MESSAGE + "\n" + QUESTIONS[n-1]
+    end
+
 
     @tmpReg[login].answers[n] = answer if n > 0 && !answer.empty?
 
@@ -155,5 +163,9 @@ class Registration
 
   def registration_aborted_message
     return REGISTRATION_ABORTED
+  end
+
+  def characters_are_not_allowed_message
+    return CHARACTERS_ARE_NOT_ALLOWED_MESSAGE
   end
 end
