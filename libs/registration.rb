@@ -30,11 +30,14 @@ class Registration
       'Все верно? (Да/Нет)'
   ]
 
+  LOGIN_REGEX = /^[[A-Za-z0-9]|_|-]{3,30}$/i
+
   USER_EXIST = 'Пользователь с таким логином уже существует, выберите другой'
   NAME_EXIST = 'Пользователь с таким именем уже существует, выберите другое имя'
   REGISTRED_MESSAGE = 'Спасибо за регистрацию.'
   REGISTRATION_ABORTED = 'Регистрация отменена.'
   CHARACTERS_ARE_NOT_ALLOWED_MESSAGE = 'Пожалуйста, задайте нормальное имя.'
+  CHARACTERS_LOGIN_NOT_ALLOWED_MESSAGE = 'В логине допустимы только символы латинского алфавита, цифры и знаки "-" и "_"'
 
   def initialize(type, game, user_name_regex=USER_NAME_REGEX)
     @game = game
@@ -121,11 +124,24 @@ class Registration
       return USER_EXIST
     end
 
+    if @game.players.key?(GetLogin(answer)) && n == 1
+      return USER_EXIST
+    end
+
     @tmpReg[tempLogin].answers[n-1] = answer if n > 0 && n <= QUESTIONS_WITH_LOGIN_PASSWORD.length
+
+    if !(answer =~ LOGIN_REGEX) && n == 1
+      return CHARACTERS_LOGIN_NOT_ALLOWED_MESSAGE + "\n" + QUESTIONS_WITH_LOGIN_PASSWORD[n-1]
+    end
 
     if n >= QUESTIONS_WITH_LOGIN_PASSWORD.length
       id = @tmpReg[tempLogin].answers[0]
       pass = @tmpReg[tempLogin].answers[1]
+
+      if pass.empty?
+        return QUESTIONS_WITH_LOGIN_PASSWORD[1]
+      end
+
       answer = '' if n == QUESTIONS_WITH_LOGIN_PASSWORD.length
       ask = RegPlayer(id, answer, pass)
     else
@@ -167,5 +183,9 @@ class Registration
 
   def characters_are_not_allowed_message
     return CHARACTERS_ARE_NOT_ALLOWED_MESSAGE
+    end
+
+  def characters_login_not_allowed_message
+    return CHARACTERS_LOGIN_NOT_ALLOWED_MESSAGE
   end
 end

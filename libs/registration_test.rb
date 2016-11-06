@@ -129,7 +129,7 @@ class RegistrationTest < Test::Unit::TestCase
   end
 
   def test_reg_player_with_login_pass
-    login = 'test@test.ru'
+    login = 'testlogin'
     assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login question')
     assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, login), 'pass question')
     assert_equal(@reg.questions_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, '123456'), '1 question')
@@ -158,17 +158,24 @@ class RegistrationTest < Test::Unit::TestCase
 
   def test_reg_player_if_answer_empty_with_login_pass
     assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 1 question')
-    assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 2 question')
-    assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 3 question')
+    assert_equal("#{@reg.characters_login_not_allowed_message}\n#{@reg.questions_with_login_password_messages[0]}", @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 2 question')
+    assert_equal("#{@reg.characters_login_not_allowed_message}\n#{@reg.questions_with_login_password_messages[0]}", @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 3 question')
+
+    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, 'test'), 'login 4 question')
+
+    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 5 question')
+    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 6 question')
+    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login 7 question')
+
   end
 
   def test_reset_with_login_pass
     assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login question')
-    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, 'test@test.ru'), 'pass question')
+    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, 'testlogin'), 'pass question')
     assert_equal(@reg.questions_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, '123456'), '1 question')
     @reg.Reset(@id)
     assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), 'login question')
-    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, 'test@test.ru'), 'pass question')
+    assert_equal(@reg.questions_with_login_password_messages[1], @reg.RegPlayerWithLoginAndPassword(@id, 'testlogin'), 'pass question')
     assert_equal(@reg.questions_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, '123456'), '1 question')
   end
 
@@ -182,6 +189,11 @@ class RegistrationTest < Test::Unit::TestCase
   def test_check_allowed_name
     assert_equal(@reg.questions_messages[0], @reg.RegPlayer(@id, ''), '1 question')
     assert_equal("#{@reg.characters_are_not_allowed_message}\n#{@reg.questions_messages[0]}", @reg.RegPlayer(@id, 'Вася@Вася'), '2 question')
+  end
+
+  def test_check_allowed_login
+    assert_equal(@reg.questions_with_login_password_messages[0], @reg.RegPlayerWithLoginAndPassword(@id, ''), '1 question')
+    assert_equal("#{@reg.characters_login_not_allowed_message}\n#{@reg.questions_with_login_password_messages[0]}", @reg.RegPlayerWithLoginAndPassword(@id, 'sdf@#$%^'), '2 question')
   end
 
   # prepare for test
