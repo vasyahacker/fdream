@@ -130,7 +130,7 @@ def LoadCommonCmd(bot, game, type)
       :type => type,
       :syntax => 'give | дать | отдать <номер предмета> <имя игрка>',
       :description => 'передать предмет из вашего инвентаря другому игроку',
-      :regex => /^((give)|(дать)|(отдать)|(передать))\s[0-9]{1,3}\s([[:alnum:]]{2,30})$/i,
+      :regex => /^((give)|(дать)|(отдать)|(передать))\s[0-9]{1,3}\s(#{USER_NAME_REGEX})$/i,
       :is_public => true
   ) do |sender, message|
     game.GiveObject2Player(sender, message) if game.check(sender)
@@ -140,7 +140,7 @@ def LoadCommonCmd(bot, game, type)
       :type => type,
       :syntax => 'mail | письмо',
       :description => "написать письмо: письмо Адольфу:\nПривет, выходи в игру! Жду тебя на почте!",
-      :regex => /^((письмо)|(mail))\s+([[:alnum:]]+):\s*.+$/im,
+      :regex => /^((письмо)|(mail))\s+(#{USER_NAME_REGEX}):\s*.+$/im,
       :is_public => true
   ) do |sender, message|
     game.Mail2Player(sender, message) if game.check(sender)
