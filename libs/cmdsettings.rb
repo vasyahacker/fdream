@@ -22,7 +22,9 @@ def LoadSettingsCmd(bot, game, type)
 
       oldPlayer = game.players[sender].clone if game.check(sender)
 
-      return @descr['namealreadyexits'] if game.CharCreate(sender, message.split(/\,\s?/)) == @descr['namealreadyexits']
+      if game.CharCreate(sender, message.split(/\,\s?/)) == game.descr['namealreadyexits']
+        next game.descr['namealreadyexits']
+      end
 
       if game.check(sender)
         newPlayer = game.players[sender]
@@ -30,7 +32,7 @@ def LoadSettingsCmd(bot, game, type)
         game.showtoall(sender, texts[1])
         texts[0]
       else
-        @descr['gogogo']
+        game.descr['gogogo']
       end
     else
       game.descr['CharCreateError'] # unless game.check(sender)
