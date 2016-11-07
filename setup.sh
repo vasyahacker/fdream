@@ -120,36 +120,36 @@ jab='n'
 
 	Yn jab "$q1"
 	[ $jab == 'y' ] && {
-    echo "\n# $q1\n@jabber_enable = true" >> $CFG_FILE
+    printf "\n# $q1\n@jabber_enable = true\n" >> $CFG_FILE
     echo
 		read_email jid $q2
-		echo "\n# $q2\n@bot_jid = '$jid'" >> $CFG_FILE
+		printf "\n# $q2\n@bot_jid = '$jid'\n" >> $CFG_FILE
 		echo
 		read -p "$q3: " pass
-		echo "\n# $q3\n@bot_jpass = '$pass'" >> $CFG_FILE
+		printf "\n# $q3\n@bot_jpass = '$pass'\n" >> $CFG_FILE
 		echo
 		read_email main_jid $q4
-		echo "\n# $q4\n\$MAINADDR = '$main_jid'" >> $CFG_FILE
+		printf "\n# $q4\n\$MAINADDR = '$main_jid'\n" >> $CFG_FILE
 
 	} || {
-		echo "\n# $q1\n@jabber_enable = false\n# $q2\n@bot_jid = ''\n# $q3\n@bot_jpass = ''\n# $q4\n\$MAINADDR = ''" >> $CFG_FILE
+		printf "\n# $q1\n@jabber_enable = false\n# $q2\n@bot_jid = ''\n# $q3\n@bot_jpass = ''\n# $q4\n\$MAINADDR = ''" >> $CFG_FILE
 	}
 	echo
 	q="Логин для SMTP авторизации на серверах gmail (вместе с @)"
 	read_email login "$q"
-	echo "\n# $q\n\$SMTP_LOGIN = '$login'" >> $CFG_FILE
+	printf "\n# $q\n\$SMTP_LOGIN = '$login'\n" >> $CFG_FILE
 	echo
 	q="Пароль для SMTP авторизации на gmail"
 	read -p "$q: " pass
-  echo "\n# $q\n\$SMTP_PWD = '$pass'" >> $CFG_FILE
+  printf "\n# $q\n\$SMTP_PWD = '$pass'\n" >> $CFG_FILE
 	echo 
 	q="Номер локации для возврата"
 	read_num retloc "$q (1 для первоначальной инициализации)"
-  echo "\n# $q\n@return_location = $retloc" >> $CFG_FILE
+  printf "\n# $q\n@return_location = $retloc\n" >> $CFG_FILE
 
 	q="Номер стартовой локации"
 	read_num sloc "$q (1 для первоначальной инициализации)"
-  echo "\n# $q\n@start_location = $sloc" >> $CFG_FILE
+  printf "\n# $q\n@start_location = $sloc" >> $CFG_FILE
   echo
 	echo "Настройки сохранены в $CFG_FILE"
 }
