@@ -8,7 +8,7 @@ platform='unknown'
 unamestr=`uname`
 MD5="md5"
 md5opts=''
-[ "$unamestr" == "Linux" ] && { MD5="md5sum"; md5opts='--' platform='linux'; }
+[ "$unamestr" == "Linux" ] && { MD5="md5sum"; md5opts='--'; platform='linux'; }
 [ "$unamestr" == 'Darwin' ] && { platform='darwin'; }
 [ "$unamestr" == 'FreeBSD' ] && { platform='freebsd'; }
 

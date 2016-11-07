@@ -454,7 +454,7 @@ class Game
         dir = 'u'
       when /^((вн)|(вниз))$/i
         dir = 'd'
-      when /^[[:alnum:]]{3,30}$/i
+      when /^#{USER_NAME_REGEX}$/i
         sender2 = GetAddrByName(sender, message)
         return @descr['unknownname'] unless sender2
         p2 = @players[sender2]
