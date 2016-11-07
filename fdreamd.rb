@@ -43,53 +43,11 @@ CFG_FILE = './config.rb'
 if File.exist?(CFG_FILE)
   load CFG_FILE 
 else
-  File.open(CFG_FILE, 'w') { |cfg| 
-
-    q = "Запускать MUD через jabber?"
-    begin
-      puts "#{q} (y/n): "
-      yn = STDIN.gets.chomp.downcase
-    end while not (yn =~ /^[yn]$/)
-    cfg.write("# #{q}\n@jabber_enable = "+(yn == 'y').to_s)
-
-    if yn == 'y'
-      q = "JID бота"
-      begin
-        puts q+":"
-        jid = gets.chomp
-      end while not (jid =~ VALID_EMAIL_REGEX)
-      cfg.write("\n# #{q}\n@bot_jid = '"+jid+"'")
-      
-      q = "Пароль для авторизации бота на jabber сервере"
-      puts q+":"
-      pass = gets.chomp
-      cfg.write("\n# #{q}\n@bot_jpass = '"+pass+"'")
-      
-      q = "JID для отправки отладочной информации"
-      begin
-        puts q+":"
-        jid = gets.chomp
-      end while not (jid =~ VALID_EMAIL_REGEX)
-      cfg.write("\n# #{q}\n$MAINADDR = '"+jid+"'")
-    
-    else
-      cfg.write("\n# #{q}\n@bot_jid = ''\n@bot_jpass = ''\n$MAINADDR = ''")
-    end
-    
-    q = "Логин для SMTP авторизации на серверах gmail"
-    puts q+":"
-    login = gets.chomp
-    cfg.write("\n# #{q}\n$SMTP_LOGIN = '"+login+"'")
-
-    q = "Пароль для SMTP авторизации на gmail"
-    puts q+":"
-    pass = gets.chomp
-    cfg.write("\n# #{q}\n$SMTP_PWD = '"+pass+"'")
-  }
-
-  puts "Настройки сохранены в "+CFG_FILE
-  load CFG_FILE
+  print "Ошибка! Нет файла конфигурации #{CFG_FILE}\nЗапустите ./setup.sh\n"
 end
+
+RETURN_LOCATION = @return_location
+START_LOCATION = @start_location
 
 Jabber::debug = false
 
@@ -105,7 +63,7 @@ $gg = game
 # Configure a public bot
 config = {
     :name => 'MUDBot',
-    :jabber_id => @bot_jid,
+    :jabber_id => @bot_jid + "/fdream",
     :password => @bot_jpass,
     :master => game.admins,
     :is_public => true,
@@ -222,14 +180,14 @@ repeat_thread = Thread.new do
     end
 #    nstat = `netstat -4|grep 'xmpp-client ESTABLISHED'`
 #    unless nstat.length > 0
-    sleep 18
-    unless bot.jabber.connected?
-      bot.jabber.disconnect
-      sleep 1
-      bot.jabber.connect
-      bot.status = game.status
-      oldstatus = game.status
-    end
+    sleep 9
+#    unless bot.jabber.connected?
+#      bot.jabber.disconnect
+#      sleep 1
+#      bot.jabber.connect
+#      bot.status = game.status
+#      oldstatus = game.status
+#    end
 #   sleep 27
   }
 end

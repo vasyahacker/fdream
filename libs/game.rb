@@ -337,8 +337,8 @@ class Game
   def Return(sender, message)
     p = @players[sender]
     l = @locations[p.where]
-    return @descr['error'] if p.where == 1
-    moveplayers(sender, p.where, 1, sender)
+    return @descr['error'] if p.where == RETURN_LOCATION
+    moveplayers(sender, p.where, RETURN_LOCATION, sender)
     nil
   end
 
@@ -454,7 +454,7 @@ class Game
         dir = 'u'
       when /^((вн)|(вниз))$/i
         dir = 'd'
-      when /^#{USER_NAME_REGEX}$/i
+      when /^[[:alnum:]]{3,30}$/i
         sender2 = GetAddrByName(sender, message)
         return @descr['unknownname'] unless sender2
         p2 = @players[sender2]
@@ -1006,7 +1006,7 @@ class Game
       if !@players.key?(sender)
         @players[sender] = Player.new(sender, 'noname',
                                       'noname', 'noname', 'noname',
-                                      'noname', 'nosex', false, 1)
+                                      'noname', 'nosex', false, START_LOCATION)
         @players[sender].createdate = Time.now.to_i
         id = @db.addplayer(sender, @players[sender])
         @players[sender].id = id
