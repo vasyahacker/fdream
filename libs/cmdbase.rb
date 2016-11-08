@@ -23,9 +23,7 @@ def LoadBaseCmd(bot, game, type)
                   :syntax => 'стоп', :regex => /^стоп$/i}],
       :is_public => true
   ) do |sender, message|
-    bot.sendstack.push([sender, game.stop(sender)]) if game.check(sender)
-    sleep 1
-    bot.tserver.fclose(sender)
+    game.stop(sender) if game.check(sender)
   end
 
   bot.add_command(
