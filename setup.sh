@@ -24,30 +24,31 @@ NC='\033[0m'
 
 # read_char var
 read_char() {
-  stty -icanon -echo
+	oldSttySettings=`stty -g`
+  stty -echo raw
   eval "$1=\$(dd bs=1 count=1 2>/dev/null)"
-  stty icanon echo
+  stty "$oldSttySettings">/dev/null
 }
 
 Yn(){
-	printf "$2 [${CBIWH}Y${NC}/n]: "
+	printf "$2 [${CGR}Y${NC}/n]: "
   local  __resultvar=$1
 	while IFS= read_char char
 	do
-    [ "$char" == "n" ] || [ "$char" == "N" ] && { printf "${CBIWH}n${NC}\n"; myresulto='n'; break; }
-    [ "$char" == $'\0' ] || [ "$char" == "y" ] || [ "$char" = "Y" ] && { printf "${CBIWH}y${NC}\n"; myresulto='y' ; break; }
+    [ "$char" == "n" ] || [ "$char" == "N" ] && { printf "${CRE}n${NC}\n"; myresulto='n'; break; }
+    [ "`printf '%d' "'$char"`" == "13" ] || [ "$char" == "y" ] || [ "$char" = "Y" ] && { printf "${CGR}y${NC}\n"; myresulto='y' ; break; }
 	done
   local  myresult=`echo "$myresulto"`
   eval $__resultvar="'$myresult'"
 }
 
 yN(){
-	printf "$2 [y/${CBIWH}N${NC}]: "
+	printf "$2 [y/${CRE}N${NC}]: "
   local  __resultvar=$1
 	while IFS= read_char char
 	do
-    [ "$char" == $'\0' ] || [ "$char" == "n" ] || [ "$char" == "N" ] && { printf "${CBIWH}n${NC}\n"; myresulto='n'; break; }
-    [ "$char" == "y" ] || [ "$char" = "Y" ] && { printf "${CBIWH}y${NC}\n"; myresulto='y' ; break; }
+    [ "`printf '%d' "'$char"`" == "13" ] || [ "$char" == "n" ] || [ "$char" == "N" ] && { printf "${CRE}n${NC}\n"; myresulto='n'; break; }
+    [ "$char" == "y" ] || [ "$char" = "Y" ] && { printf "${CGR}y${NC}\n"; myresulto='y' ; break; }
 	done
   local  myresult=`echo "$myresulto"`
   eval $__resultvar="'$myresult'"
@@ -109,7 +110,6 @@ then
 	[ "$del" == 'y' ] && { mv $CFG_FILE old_$CFG_FILE; }
 fi
 
-echo
 main_jid=''
 jab='n'
 [ "$del" == 'already' ] || [ "$del" == 'y' ] && {
