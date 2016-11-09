@@ -110,11 +110,9 @@ class TelServ
           begin
             log("#{client_addrinfo.ip_address} is connected")
             serv(client)
-            @logins.delete(client)
-            client.close
-            log("#{client_addrinfo.ip_address} is disconnected")
           ensure
             client.close
+            log("#{client_addrinfo.ip_address} is disconnected")
           end
         }
       }
@@ -252,6 +250,7 @@ class TelServ
 
         if enc(message, @logins[login].enc) =~ /^((stop)|(стоп))$/i
           sock.puts $gg.stop(login)
+          fclose(login)
           sleep 1
           break
         end
