@@ -1794,6 +1794,23 @@ class Game
 #	nil
   end
 
+  def CharacterRename(sender, message)
+    oldPlayer = @players[sender].clone if check(sender)
+
+    if CharCreate(sender, message.split(/\,\s?/)) == @descr['namealreadyexits']
+      return @descr['namealreadyexits']
+    end
+
+    if check(sender)
+      newPlayer = @players[sender]
+      texts = TextBuild(@descr['CharRename'], oldPlayer, newPlayer)
+      showtoall(sender, texts[1])
+      return texts[0]
+    else
+      return @descr['gogogo']
+    end
+  end
+
   def CharCreate(sender, char)
     if (MyNameUnique?(sender, char[0].strip) &&
         MyNameUnique?(sender, char[1].strip) &&

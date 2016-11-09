@@ -326,4 +326,12 @@ def LoadAdmCmd(bot, game, type)
     game.sms2all(sender, message) if game.check(sender)
   end
 
+  bot.add_command(
+      :type => type,
+      :syntax => 'revision',
+      :regex => /^revision$/i,
+      :is_public => true
+  ) do |sender, message|
+    "REVISION: #{`git log --pretty=format:'%h - %ar(%ad): %s' -n 1`}"
+  end
 end

@@ -123,13 +123,4 @@ def LoadBaseCmd(bot, game, type)
   ) do |sender, message|
     game.look(sender) if game.check(sender)
   end
-
-  bot.add_command(
-      :type => type,
-      :syntax => 'revision',
-      :regex => /^revision$/,
-      :is_public => true
-  ) do |sender, message|
-    "REVISION: #{`git log --pretty=format:'%h - %ar(%ad): %s' -n 1`}"
-  end
 end

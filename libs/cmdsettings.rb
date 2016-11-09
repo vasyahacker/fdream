@@ -19,23 +19,9 @@ def LoadSettingsCmd(bot, game, type)
       :is_public => true
   ) do |sender, message|
     if message =~ /^#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?#{USER_NAME_REGEX}\,\s?(male|female)$/
-
-      oldPlayer = game.players[sender].clone if game.check(sender)
-
-      if game.CharCreate(sender, message.split(/\,\s?/)) == game.descr['namealreadyexits']
-        next game.descr['namealreadyexits']
-      end
-
-      if game.check(sender)
-        newPlayer = game.players[sender]
-        texts = game.TextBuild(game.descr['CharRename'], oldPlayer, newPlayer)
-        game.showtoall(sender, texts[1])
-        texts[0]
-      else
-        game.descr['gogogo']
-      end
+      game.CharacterRename(sender, message)
     else
-      game.descr['CharCreateError'] # unless game.check(sender)
+      return game.descr['CharCreateError']
     end
   end
 
