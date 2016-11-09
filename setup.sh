@@ -106,20 +106,20 @@ then
   echo "Файл конфигурации уже существует"
 	
 	yN del "Cоздать новый?"
-	[ $del == 'y' ] && { mv $CFG_FILE old_$CFG_FILE; }
+	[ "$del" == 'y' ] && { mv $CFG_FILE old_$CFG_FILE; }
 fi
 
 echo
 main_jid=''
 jab='n'
-[ $del == 'already' ] || [ $del == 'y' ] && {
+[ "$del" == 'already' ] || [ "$del" == 'y' ] && {
 	q1="Запускать MUD через jabber?"
 	q2="JID бота"
 	q3="Пароль для авторизации бота на jabber сервере"
 	q4="JID для отправки отладочной информации"		
 
 	Yn jab "$q1"
-	[ $jab == 'y' ] && {
+	[ "$jab" == 'y' ] && {
     printf "\n# $q1\n@jabber_enable = true\n" >> $CFG_FILE
     echo
 		read_email jid $q2
@@ -155,7 +155,7 @@ jab='n'
 }
 echo
 Yn db "Cоздать базу данных?"
-[ $db == 'y' ] && { 
+[ "$db" == 'y' ] && { 
 	
 	[ ! -f $SQL_FILE ] && { echo "Файл дампа $SQL_FILE отсутствует! Создать бд неполучится."; exit 1; }
 
@@ -163,7 +163,7 @@ Yn db "Cоздать базу данных?"
 	then
 	  echo "Файл базы данных уже существует"
 		yN del "Очистить?"
-		[ $del == 'y' ] && { rm -f $DB_FILE; } || { echo "Конфигурация завершена"; exit 0; }
+		[ "$del" == 'y' ] && { rm -f $DB_FILE; } || { echo "Конфигурация завершена"; exit 0; }
 	fi
 
 	sqlite3 $DB_FILE < $SQL_FILE
@@ -171,14 +171,14 @@ Yn db "Cоздать базу данных?"
 	echo "Файл бд успешно создан"
 	echo
 	Yn adduser "Добавить JID администратора?"
-	[ $adduser == 'y' ] && {
+	[ "$adduser" == 'y' ] && {
 
 		use_main='n'
-		[ $jab == 'y' ] && {
+		[ "$jab" == 'y' ] && {
 			Yn use_main "Использовать $main_jid в качестве jid администратора?"
 		}
 
-		[ $use_main == 'n' ] && { read_email main_jid "Введите JID администратора"; }
+		[ "$use_main" == 'n' ] && { read_email main_jid "Введите JID администратора"; }
 	
 		read -p "Введите пароль администратора для telnet: " pass 
 		md5pass=`printf "$pass" | $MD5 $md5opts | cut -d ' ' -f 1`
