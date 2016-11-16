@@ -92,18 +92,16 @@ class TelnetUser
 end
 
 class TelServ
-  attr_accessor :jb
+  attr_accessor :jb, :gg
 
 #    TIOCGWINSZ =  0x40087468
   Encodings = ["KOI8-R", "UTF-8", "WINDOWS-1251", "cp866"]
 
-  def initialize(jb, port=34567, host='0.0.0.0', maxcon=18)
+  def initialize(jb, game, port=34567, host='0.0.0.0', maxcon=18)
     @logins = {}
     @type = 'telnet'
-
-    #@encoding = Encodings[1]
-    #server = TCPServer.new(host, port)
     @jb = jb
+    @gg = game
     telnet_thread = Thread.new do
       Socket.tcp_server_loop(host,port) {|client, client_addrinfo|
         Thread.new {
@@ -116,15 +114,6 @@ class TelServ
           end
         }
       }
-
-      # loop do
-      #   Thread.start(server.accept) do |client|
-      #     log("#{client.peeraddr[2]}:#{client.peeraddr[1]} is connected")
-      #     serv(client)
-      #     client.close
-      #     @logins.delete(client)
-      #   end
-      # end
     end
   end
 
@@ -192,7 +181,7 @@ class TelServ
           login.chomp! unless login.nil?
           login = enc(login, encoding)
           if (login=='new')
-            reg = Registration.new(@type, $gg)
+            reg = Registration.new(@type, @gg)
 
             sock.write("\r\n"+denc('Для входа необходимо пройти небольшую процедуру регистрации.', encoding)+"\r\n")
 
@@ -229,11 +218,11 @@ class TelServ
           end
 
           sock.write nocolor ""
-          login = Registration.GetLoginOfType(login, @type) if $gg.players.key?(Registration.GetLoginOfType(login, @type))
-          if $gg.players.key?(login) && $gg.players[login].pwd == Digest::MD5.hexdigest(password) 
+          login = Registration.GetLoginOfType(login, @type) if @gg.players.key?(Registration.GetLoginOfType(login, @type))
+          if @gg.players.key?(login) && @gg.players[login].pwd == Digest::MD5.hexdigest(password) 
             logged_in = true
             @logins[login] = TelnetUser.new(sock, encoding)
-            if $gg.players[login].ready
+            if @gg.players[login].ready
               parse_command(login, "l")
             else
               parse_command(login, "start")
@@ -249,7 +238,7 @@ class TelServ
         message.chomp!
 
         if enc(message, @logins[login].enc) =~ /^((stop)|(стоп))$/i
-          sock.puts $gg.stop(login)
+          sock.puts @gg.stop(login)
           fclose(login)
           sleep 1
           break
@@ -282,7 +271,7 @@ class TelServ
     return false if @logins.nil?
     return false unless @logins.key? login
     begin
-      $gg.stop(login)
+      @gg.stop(login)
       @logins[login].sock.close unless @logins[login].sock.closed?
       @logins.delete(login)
     rescue => detail

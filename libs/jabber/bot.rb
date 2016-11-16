@@ -51,7 +51,7 @@ module Jabber
     # Direct access to the underlying
     # Jabber::Simple[http://xmpp4r-simple.rubyforge.org/] object.
     attr_reader :jabber
-    attr_accessor :masters, :sendstack, :tserver
+    attr_accessor :masters, :sendstack, :tserver, :tgserver
 
     # Creates a new Jabber::Bot object with the specified +config+ Hash, which
     # must contain +jabber_id+, +password+, and +master+ at a minimum.
@@ -119,7 +119,8 @@ module Jabber
           :is_public => @config[:is_public]
       ) { |sender, message| help_message(sender, message) }
 
-      @tserver = TelServ.new(self)
+      @tserver = TelServ.new(self, @config[:game])
+      @tgserver = TelegramServer.new(self, @config[:tgkey], @config[:game]) unless @config[:tgkey] == nil 
     end
 
     # Add a command to the bot's repertoire.
@@ -350,7 +351,9 @@ module Jabber
           begin
             ss.each do |sender, message|
               next if @tserver.deliver(sender, message)
-
+              if @config[:tgkey] != nil
+                next if @tgserver.deliver(sender, rmcolors(message.to_s))
+              end
               deliver(sender, rmcolors(message.to_s)) if message != false
             end
           rescue => detail

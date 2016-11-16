@@ -113,11 +113,15 @@ fi
 main_jid=''
 jab='n'
 [ "$del" == 'already' ] || [ "$del" == 'y' ] && {
+	q0="Ключ telegram бота"
 	q1="Запускать MUD через jabber?"
 	q2="JID бота"
 	q3="Пароль для авторизации бота на jabber сервере"
 	q4="JID для отправки отладочной информации"		
 
+	read -p "$q0 (enter, если tg не нужен): " tgkey
+  printf "\n# $q0\n@tgkey = '$tgkey'\n" >> $CFG_FILE
+  echo
 	Yn jab "$q1"
 	[ "$jab" == 'y' ] && {
     printf "\n# $q1\n@jabber_enable = true\n" >> $CFG_FILE

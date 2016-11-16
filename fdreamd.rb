@@ -18,6 +18,7 @@ require 'digest/md5'
 
 require_relative 'libs/jabber/xmpp4r-simple.rb'
 require_relative 'libs/tserver.rb'
+require_relative 'libs/tgserver.rb'
 require_relative 'libs/jabber/bot.rb'
 require_relative 'libs/db.rb'
 require_relative 'libs/players.rb'
@@ -69,7 +70,9 @@ config = {
     :is_public => true,
     :status => 'play?',
     :presence => :chat,
-    :priority => 10
+    :priority => 10,
+    :tgkey => @tgkey,
+    :game => game
 }
 
 # Create a new bot
