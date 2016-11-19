@@ -75,7 +75,7 @@ class TelegramServer
         begin
           @jb.parse_command(sender, message.text)
         rescue => detail
-          log "\nОшибка #{TYPE} при отправке команды боту: #{$!.to_s}\n"+detail.backtrace.join("\n")
+          log "\nОшибка #{TYPE} при отправке команды: #{message.text} - игроком: #{sender}, боту: #{$!.to_s}\n"+detail.backtrace.join("\n")
         end
       end
     end
@@ -113,7 +113,7 @@ class TelegramServer
 
       @bot.api.send_message(chat_id: id[0], text: txt, reply_markup: keyboard) unless txt.empty?
     rescue => detail
-      log "\nОшибка #{TYPE} при отправке сообщения игроку: #{$!.to_s}\n"+detail.backtrace.join("\n")
+      log "\nОшибка #{TYPE} при отправке сообщения: #{txt} - игроку #{sender}: #{$!.to_s}\n"+detail.backtrace.join("\n")
     end
 
     return true
