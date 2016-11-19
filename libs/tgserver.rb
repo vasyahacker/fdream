@@ -68,11 +68,6 @@ class TelegramServer
           next
         end
 
-        if message.text =~ /^((stop)|(стоп))$/i
-          bot.api.send_message(chat_id: message.from.id, text: game.stop(sender), reply_markup: @startKey)
-          next
-        end
-
         @jb.parse_command(sender, message.text)
       end
 
@@ -86,8 +81,10 @@ class TelegramServer
     begin
       keyboard = @dirKey
 
+      player = @game.players[sender]
+
       # замена "смотреть на руки" при большой осознаности на "язык к нёбу"
-      if @game.players[sender].sensibleness > 99
+      if player.sensibleness > 99
         keyboard.keyboard[0][0] = 'язык к нёбу'
       end
 
@@ -102,8 +99,8 @@ class TelegramServer
         keyboard = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: help_kb, one_time_keyboard: true)
       end
 
-      # стартовая клава при автовыходе
-      if txt == @game.descr['autologout']
+      # стартовая клава при выходе и автовыходе
+      if txt == @game.descr['autologout'] || txt == @game.TextBuild(@game.descr["wakeup"], player)[0]
         keyboard = @startKey
       end
 
