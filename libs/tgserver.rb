@@ -9,9 +9,17 @@ class TelegramServer
     @jb = jb
 
     @startKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(старт)], one_time_keyboard: false)
-    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [['см руки', 'север', 'вверх'], %w(запад см восток), %w(кто юг вниз), %w(инфо помощь), %w(стоп)], one_time_keyboard: false)
+    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [
+        ['см руки', 'север', 'вверх'],
+        %w(запад см восток),
+        %w(кто юг вниз),
+        %w(инвентарь смс помощь),
+        ['инфо', 'язык к небу'],
+        %w(стоп)
+    ], one_time_keyboard: false)
+
     @sexKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(М Ж)], one_time_keyboard: true)
-    @confirm = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(Д Н)], one_time_keyboard: true)
+    @confirm = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(Да Нет)], one_time_keyboard: true)
 
     @regMessage = {}
     @game = game
@@ -30,7 +38,7 @@ class TelegramServer
       @bot = bot
 
       bot.listen do |message|
-        if message.text == nil
+        if message.text.empty?
           next
         end
 
@@ -76,7 +84,25 @@ class TelegramServer
     return false unless id[1] == TYPE
 
     begin
-      @bot.api.send_message(chat_id: id[0], text: txt, reply_markup: @dirKey) unless txt.empty?
+      keyboard = @dirKey
+
+      # генерация клавиатуры для помощи
+      if txt =~ /^Категории команд:\n/i
+        help_kb = []
+        help_split = txt.split(/\n/).drop(2).reverse.drop(2).reverse
+        help_split.each do |name|
+          help_kb.push(["? #{name}"])
+        end
+
+        keyboard = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: help_kb, one_time_keyboard: true)
+      end
+
+      # стартовая клава при автовыходе
+      if txt == @game.descr['autologout']
+        keyboard = @startKey
+      end
+
+      @bot.api.send_message(chat_id: id[0], text: txt, reply_markup: keyboard) unless txt.empty?
     rescue => detail
       log "\nОшибка #{TYPE} при отправке команды боту: #{$!.to_s}\n"+detail.backtrace.join("\n")
     end
