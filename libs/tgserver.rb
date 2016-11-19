@@ -67,10 +67,19 @@ class TelegramServer
   end
 
   def deliver(sender, txt)
-    return false if sender =~ VALID_EMAIL_REGEX || sender =~ /^[0-9]{1,36}@telnet$/
     id = sender.split('@')
     return false unless id[1] == TYPE
-    @bot.api.send_message(chat_id: id[0], text: txt, reply_markup: @dirKey)
+
+    begin
+      @bot.api.send_message(chat_id: id[0], text: txt, reply_markup: @dirKey) unless txt.empty?
+    rescue => detail
+      log "\nОшибка #{TYPE} при отправке команды боту: #{$!.to_s}\n"+detail.backtrace.join("\n")
+    end
+
     return true
+  end
+
+  def log(mes)
+    $stderr.puts "\n[#{Time.now.to_s}]: "+mes
   end
 end
