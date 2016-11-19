@@ -9,7 +9,7 @@ class TelegramServer
     @jb = jb
 
     @startKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(старт)], one_time_keyboard: false)
-    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [['см руки',"север","вверх"], %w(запад см восток), %w(кто юг вниз), %w(инфо помощь), %w(стоп)], one_time_keyboard: false)
+    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [['см руки', "север", "вверх"], %w(запад см восток), %w(кто юг вниз), %w(инфо помощь), %w(стоп)], one_time_keyboard: false)
     @sexKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(М Ж)], one_time_keyboard: true)
     @confirm = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(Д Н)], one_time_keyboard: true)
 
@@ -34,8 +34,7 @@ class TelegramServer
           next
         end
 
-        sender = "#{message.from.id}@#{TYPE}"
-#        print sender + " - #{message.from.first_name} - @#{message.from.username} - message: #{message.text}\n\n"
+        sender = Registration.GetLoginOfType(message.from.id, TYPE)
 
         unless game.players.key?(sender)
           unless @regMessage[sender]
@@ -62,7 +61,7 @@ class TelegramServer
         end
 
         if message.text =~ /^((stop)|(стоп))$/i
-          bot.api.send_message(chat_id: message.from.id, text: game.stop(Registration.GetLoginOfType(message.from.id, TYPE)),reply_markup: @startKey)
+          bot.api.send_message(chat_id: message.from.id, text: game.stop(sender), reply_markup: @startKey)
           next
         end
 
