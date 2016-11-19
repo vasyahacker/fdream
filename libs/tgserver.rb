@@ -9,7 +9,7 @@ class TelegramServer
     @jb = jb
 
     @startKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(старт)], one_time_keyboard: false)
-    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [['см руки', "север", "вверх"], %w(запад см восток), %w(кто юг вниз), %w(инфо помощь), %w(стоп)], one_time_keyboard: false)
+    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [['см руки', 'север', 'вверх'], %w(запад см восток), %w(кто юг вниз), %w(инфо помощь), %w(стоп)], one_time_keyboard: false)
     @sexKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(М Ж)], one_time_keyboard: true)
     @confirm = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(Д Н)], one_time_keyboard: true)
 
