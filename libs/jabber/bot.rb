@@ -120,7 +120,7 @@ module Jabber
       ) { |sender, message| help_message(sender, message) }
 
       @tserver = TelServ.new(self, @config[:game])
-      @tgserver = TelegramServer.new(self, @config[:tgkey], @config[:game]) unless @config[:tgkey] == nil 
+      @tgserver = TelegramServer.new(self, @config[:tgkey], @config[:game]) unless @config[:tgkey] == nil
     end
 
     # Add a command to the bot's repertoire.
@@ -478,23 +478,27 @@ module Jabber
     # error and groupchat are not supported.
     def start_listener_thread #:nodoc:
       listener_thread = Thread.new do
-        loop do
-          if @jabber.received_messages?
-            @jabber.received_messages do |message|
-              # Remove the Jabber resourse, if any
-              sender = message.from.to_s.sub(/\/.+$/, '')
-              if message.type == :chat
+        begin
+          loop do
+            if @jabber.received_messages?
+              @jabber.received_messages do |message|
+                # Remove the Jabber resourse, if any
+                sender = message.from.to_s.sub(/\/.+$/, '')
+                if message.type == :chat
 #                unless $DreamInDream.include? sender
-                parse_thread = Thread.new do
-                  #p sender
-                  parse_command(sender, CGI::unescapeHTML(message.body))
-                end
-                parse_thread.join
+                  parse_thread = Thread.new do
+                    #p sender
+                    parse_command(sender, CGI::unescapeHTML(message.body))
+                  end
+                  parse_thread.join
 #                end
+                end
               end
             end
+            sleep 0.7
           end
-          sleep 0.7
+        rescue => detail
+          $stderr.puts "\n[#{Time.now.to_s}]: \n[bot] start_listener_thread: #{$!.to_s}\n"+detail.backtrace.join("\n")
         end
       end
       listener_thread.join

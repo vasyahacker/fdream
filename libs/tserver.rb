@@ -103,17 +103,22 @@ class TelServ
     @jb = jb
     @gg = game
     telnet_thread = Thread.new do
-      Socket.tcp_server_loop(host,port) {|client, client_addrinfo|
-        Thread.new {
-          begin
-            log("#{client_addrinfo.ip_address} is connected")
-            serv(client)
-          ensure
-            client.close
-            log("#{client_addrinfo.ip_address} is disconnected")
-          end
+      begin
+
+        Socket.tcp_server_loop(host, port) { |client, client_addrinfo|
+          Thread.new {
+            begin
+              log("#{client_addrinfo.ip_address} is connected")
+              serv(client)
+            ensure
+              client.close
+              log("#{client_addrinfo.ip_address} is disconnected")
+            end
+          }
         }
-      }
+      rescue => detail
+        log "\nОшибка с сервером #{@type}: #{$!.to_s}\n"+detail.backtrace.join("\n")
+      end
     end
   end
 
@@ -190,7 +195,7 @@ class TelServ
             answer = ''
             loop_id = 0
             loop {
-              question = denc(reg.RegPlayerWithLoginAndPassword(temp_id, answer),encoding)
+              question = denc(reg.RegPlayerWithLoginAndPassword(temp_id, answer), encoding)
               if question == reg.registration_aborted_message
                 sock.write question
                 break
@@ -204,7 +209,7 @@ class TelServ
               sock.write(question + ': ')
 
               answer = sock.gets.chomp!
-              answer = enc(answer,encoding)
+              answer = enc(answer, encoding)
 
               login = answer if question == reg.questions_with_login_password_messages[0] || question == reg.user_exist_message
               password = answer if question == reg.questions_with_login_password_messages[1]
@@ -219,7 +224,7 @@ class TelServ
 
           sock.write nocolor ""
           login = Registration.GetLoginOfType(login, @type) if @gg.players.key?(Registration.GetLoginOfType(login, @type))
-          if @gg.players.key?(login) && @gg.players[login].pwd == Digest::MD5.hexdigest(password) 
+          if @gg.players.key?(login) && @gg.players[login].pwd == Digest::MD5.hexdigest(password)
             logged_in = true
             @logins[login] = TelnetUser.new(sock, encoding)
             if @gg.players[login].ready

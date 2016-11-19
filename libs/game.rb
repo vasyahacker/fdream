@@ -97,7 +97,8 @@ class Game
           body m
           add_file file unless file.nil?
         end
-      rescue
+      rescue => detail
+        $stderr.puts "\n[#{Time.now.to_s}]: \n[game] send_email: #{$!.to_s}\n"+detail.backtrace.join("\n")
         sendmess($MAINADDR, "Ошибка при отсылке почты: #{$!.to_s}")
       end
     end
@@ -201,7 +202,8 @@ class Game
           sendmess(sender2, out[2]) if p2.ready &&
               p2.inventory.index { |o| o.type=='mobile' } != nil
         end
-      rescue
+      rescue => detail
+        $stderr.puts "\n[#{Time.now.to_s}]: \n[game] sms2all: #{$!.to_s}\n"+detail.backtrace.join("\n")
         sendmess($MAINADDR, "Ошибка при отсылке смс: #{$!.to_s}")
       end
     end
@@ -1077,9 +1079,12 @@ class Game
         Thread.new {
           begin
             o.incomingplayer(sender, p)
-          rescue
+          rescue => detail
             errmess = "\n# # #\nERROR: #{$!.to_s}\n\nin embeded obect incoming player event code \""+
                 o.KtoChto()+"\" in location \##{o.id_parent.to_s}\n# # #"
+
+            $stderr.puts "\n[#{Time.now.to_s}]: \n[game] go: #{$!.to_s}\n#{errmess}\n"+detail.backtrace.join("\n")
+
             sendmess($MAINADDR, errmess)
           end
         }
@@ -1620,9 +1625,11 @@ class Game
           Thread.new {
             begin
               o.incomingplayer(player, char)
-            rescue
+            rescue => detail
               errmess = "\n# # #\nERROR: #{$!.to_s}\n\nin embeded obect incoming player event code \""+
                   o.KtoChto()+"\" in location \##{o.id_parent.to_s}\n# # #"
+
+              $stderr.puts "\n[#{Time.now.to_s}]: \n[game] moveplayers: #{$!.to_s}\n#{errmess}\n"+detail.backtrace.join("\n")
               sendmess($MAINADDR, errmess)
             end
           }
@@ -1664,9 +1671,11 @@ class Game
       Thread.new {
         begin
           o.incomingplayer(sender, p)
-        rescue
+        rescue => detail
           errmess = "\n# # #\nERROR: #{$!.to_s}\n\nin embeded obect incoming player event code \""+
               o.KtoChto()+"\" in location \##{o.id_parent.to_s}\n# # #"
+
+          $stderr.puts "\n[#{Time.now.to_s}]: \n[game] start: #{$!.to_s}\n#{errmess}\n"+detail.backtrace.join("\n")
           sendmess($MAINADDR, errmess)
         end
       }
@@ -1944,7 +1953,8 @@ class Game
               end
             }
           end
-        rescue
+        rescue => detail
+          $stderr.puts "\n[#{Time.now.to_s}]: \n[game] DoTime: #{$!.to_s}\n"+detail.backtrace.join("\n")
           sendmess($MAINADDR, "error in location events fork:\n" + $!.to_s)
         end
         sleep 1

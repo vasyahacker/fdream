@@ -88,7 +88,7 @@ class Obj
     Thread.new do
       begin
         @listencode.call(sender, message) unless @listencode.nil?
-      rescue
+      rescue => detail
         if @parent_type == 'player'
           p = $gg.getplayerbyid(@id_parent)
           cont = "player(#{p.name}) backpack in loc ##{p.where.to_s}"
@@ -100,6 +100,7 @@ class Obj
             KtoChto()+"\" in "+cont+"\n# # #"
 
         $gg.sendmess($MAINADDR, mess)
+        $stderr.puts "\n[#{Time.now.to_s}]: \n[objects] listen: #{$!.to_s}\n#{mess}\n"+detail.backtrace.join("\n")
       end
     end
   end
@@ -121,7 +122,7 @@ class Obj
     @thread = Thread.new do
       begin
         eval(@code)
-      rescue
+      rescue => detail
         if @parent_type == 'player'
           p = $gg.getplayerbyid(@id_parent)
           cont = "player(#{p.name}) backpack in loc ##{p.where.to_s}"
@@ -133,6 +134,7 @@ class Obj
             KtoChto()+"\" in "+cont+"\n# # #"
 
         $gg.sendmess($MAINADDR, mess)
+        $stderr.puts "\n[#{Time.now.to_s}]: \n[objects] runfork: #{$!.to_s}\n#{mess}\n"+detail.backtrace.join("\n")
       end
     end
   end
