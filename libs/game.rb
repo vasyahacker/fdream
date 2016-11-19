@@ -1049,8 +1049,10 @@ class Game
       showtoall(sender, txt, p.where)
       oldloc = p.where
 
-      p.where = destloc if p.realise?(@time, l.power_place)
-      p.where = rndloc unless p.realise?(@time, l.power_place)
+      realise = p.realise?(@time, l.power_place)
+
+      p.where = destloc if realise
+      p.where = rndloc unless realise
       if sender.class == NPC
         @locations[oldloc].objects.delete_if { |x|
           x.id == sender.id }
@@ -1174,8 +1176,8 @@ class Game
         chars += " (#{char.state})" unless char.state.strip.empty?
         unless l.powerplace?
           descrsrealise = TextBuild(@descr['descrsrealise'], char)
-          chars += descrsrealise[1] if char.realise?(@time, l.power_place)
-          chars += descrsrealise[0] unless char.realise?(@time, l.power_place)
+          chars += descrsrealise[1] if char.is_realise?(@time, l.power_place)
+          chars += descrsrealise[0] unless char.is_realise?(@time, l.power_place)
         end
       end
     }

@@ -116,4 +116,8 @@ class Player
     return false
   end
 
+  def is_realise?(time, in_power_place=false)
+    return true if in_power_place
+    return time - @lrealise < @REALISEINTERVAL
+  end
 end
