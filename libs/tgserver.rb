@@ -8,7 +8,8 @@ class TelegramServer
   def initialize(jb, token, game)
     @jb = jb
 
-    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(с ю з в), %w(вв вн см)], one_time_keyboard: false)
+    @startKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(старт)], one_time_keyboard: false)
+    @dirKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [['см руки',"север","вверх"], %w(запад см восток), %w(кто юг вниз), %w(инфо помощь), %w(стоп)], one_time_keyboard: false)
     @sexKey = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(М Ж)], one_time_keyboard: true)
     @confirm = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [%w(Д Н)], one_time_keyboard: true)
 
@@ -57,6 +58,11 @@ class TelegramServer
             next
           end
           bot.api.send_message(chat_id: message.from.id, text: ret)
+          next
+        end
+
+        if message.text =~ /^((stop)|(стоп))$/i
+          bot.api.send_message(chat_id: message.from.id, text: game.stop(Registration.GetLoginOfType(message.from.id, TYPE)),reply_markup: @startKey)
           next
         end
 
