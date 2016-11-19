@@ -345,21 +345,28 @@ module Jabber
 
       repeat_thread = Thread.new do
         while true do
-          sleep 0.5
-          ss = @sendstack #.reverse
-          @sendstack = []
-          begin
+          if @sendstack.length > 0
+            ss = @sendstack #.reverse
+            @sendstack = []
+
             ss.each do |sender, message|
-              next if @tserver.deliver(sender, message)
-              if @config[:tgkey] != nil
-                next if @tgserver.deliver(sender, rmcolors(message.to_s))
+              Thread.new do
+                begin
+                  next if @tserver.deliver(sender, message)
+                  if @config[:tgkey] != nil
+                    next if @tgserver.deliver(sender, rmcolors(message.to_s))
+                  end
+                  deliver(sender, rmcolors(message.to_s)) if message != false
+
+                rescue => detail
+                  print "\n[#{Time.now.to_s}] Ошибка при отсылке: #{$!.to_s}\n"+detail.backtrace.join("\n")
+                end
               end
-              deliver(sender, rmcolors(message.to_s)) if message != false
             end
-          rescue => detail
-            print "\n[#{Time.now.to_s}] Ошибка при отсылке: #{$!.to_s}\n"+detail.backtrace.join("\n")
+            ss.clear
+          else
+            sleep 0.05
           end
-          ss.clear
         end
       end
     end
