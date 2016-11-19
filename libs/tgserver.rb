@@ -88,7 +88,7 @@ class TelegramServer
 
       # замена "смотреть на руки" при большой осознаности на "язык к нёбу"
       if @game.players[sender].sensibleness > 99
-        keyboard.keyboard[0][0] = 'язык к небу'
+        keyboard.keyboard[0][0] = 'язык к нёбу'
       end
 
       # генерация клавиатуры для помощи

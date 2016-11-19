@@ -221,9 +221,9 @@ def LoadCommonCmd(bot, game, type)
 
   bot.add_command(
       :type => type,
-      :syntax => 'язык к небу',
+      :syntax => 'язык к нёбу',
       :description => 'То же что и смотреть на руки, но при осознанности большей 99',
-      :regex => /^язык к небу$/i,
+      :regex => /^((язык к небу)|(язык к нёбу))$/i,
       :alias => [{:type => type,
                   :syntax => 'lts', :regex => /^lts$/i}],
       :is_public => true
