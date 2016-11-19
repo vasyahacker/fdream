@@ -27,7 +27,11 @@ class TelegramServer
 
     telegram_thread = Thread.new do
       Thread.start(token, game) do |t, g|
-        server(t, g)
+        begin
+          server(t, g)
+        rescue => detail
+          log "\nОшибка с сервером #{TYPE}: #{$!.to_s}\n"+detail.backtrace.join("\n")
+        end
       end
     end
   end
@@ -68,9 +72,12 @@ class TelegramServer
           next
         end
 
-        @jb.parse_command(sender, message.text)
+        begin
+          @jb.parse_command(sender, message.text)
+        rescue => detail
+          log "\nОшибка #{TYPE} при отправке команды боту: #{$!.to_s}\n"+detail.backtrace.join("\n")
+        end
       end
-
     end
   end
 
@@ -106,7 +113,7 @@ class TelegramServer
 
       @bot.api.send_message(chat_id: id[0], text: txt, reply_markup: keyboard) unless txt.empty?
     rescue => detail
-      log "\nОшибка #{TYPE} при отправке команды боту: #{$!.to_s}\n"+detail.backtrace.join("\n")
+      log "\nОшибка #{TYPE} при отправке сообщения игроку: #{$!.to_s}\n"+detail.backtrace.join("\n")
     end
 
     return true
