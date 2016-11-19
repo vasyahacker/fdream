@@ -14,7 +14,7 @@ class TelegramServer
         %w(запад см восток),
         %w(кто юг вниз),
         %w(инвентарь смс помощь),
-        ['инфо', 'язык к небу'],
+        %w(инфо),
         %w(стоп)
     ], one_time_keyboard: false)
 
@@ -85,6 +85,11 @@ class TelegramServer
 
     begin
       keyboard = @dirKey
+
+      # замена "смотреть на руки" при большой осознаности на "язык к нёбу"
+      if @game.players[sender].sensibleness > 99
+        keyboard.keyboard[0][0] = 'язык к небу'
+      end
 
       # генерация клавиатуры для помощи
       if txt =~ /^Категории команд:\n/i
