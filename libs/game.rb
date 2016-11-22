@@ -1700,17 +1700,17 @@ class Game
   def exits(loc)
     l = @locations[loc]
     ex = @descr['exits']
-    ex += "\n #{@descr['gden']} - #{@locations[l.n].name.downcase}" unless @locations[l.n].nil?
+    ex += "\n #{@descr['gden']} - #{@locations[l.n].name.downcase}" if l.n > 0
     ex += "\n #{@descr['gden']} - #{@descr['closed']}" if l.n < 0
-    ex += "\n #{@descr['gdes']} - #{@locations[l.s].name.downcase}" unless @locations[l.s].nil?
+    ex += "\n #{@descr['gdes']} - #{@locations[l.s].name.downcase}" if l.s > 0
     ex += "\n #{@descr['gdes']} - #{@descr['closed']}" if l.s < 0
-    ex += "\n #{@descr['gdew']} - #{@locations[l.w].name.downcase}" unless @locations[l.w].nil?
+    ex += "\n #{@descr['gdew']} - #{@locations[l.w].name.downcase}" if l.w > 0
     ex += "\n #{@descr['gdew']} - #{@descr['closed']}" if l.w < 0
-    ex += "\n #{@descr['gdee']} - #{@locations[l.e].name.downcase}" unless @locations[l.e].nil?
+    ex += "\n #{@descr['gdee']} - #{@locations[l.e].name.downcase}" if l.e > 0
     ex += "\n #{@descr['gdee']} - #{@descr['closed']}" if l.e < 0
-    ex += "\n #{@descr['gdeu']} - #{@locations[l.u].name.downcase}" unless @locations[l.u].nil?
+    ex += "\n #{@descr['gdeu']} - #{@locations[l.u].name.downcase}" if l.u > 0
     ex += "\n #{@descr['gdeu']} - #{@descr['closed']}" if l.u < 0
-    ex += "\n #{@descr['gded']} - #{@locations[l.d].name.downcase}" unless @locations[l.d].nil?
+    ex += "\n #{@descr['gded']} - #{@locations[l.d].name.downcase}" if l.d > 0
     ex += "\n #{@descr['gded']} - #{@descr['closed']}" if l.d < 0
     ex
   end
