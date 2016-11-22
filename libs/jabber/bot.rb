@@ -120,7 +120,7 @@ module Jabber
       ) { |sender, message| help_message(sender, message) }
 
       @tserver = TelServ.new(self, @config[:game])
-      @tgserver = TelegramServer.new(self, @config[:tgkey], @config[:game]) unless @config[:tgkey] == nil
+      @tgserver = TelegramServer.new(self, @config[:tgkey], @config[:game]) unless @config[:tgkey].empty?
     end
 
     # Add a command to the bot's repertoire.
@@ -353,7 +353,7 @@ module Jabber
               Thread.new do
                 begin
                   next if @tserver.deliver(sender, message)
-                  if @config[:tgkey] != nil
+                  if !@config[:tgkey].empty?
                     next if @tgserver.deliver(sender, rmcolors(message.to_s))
                   end
                   deliver(sender, rmcolors(message.to_s)) if message != false
