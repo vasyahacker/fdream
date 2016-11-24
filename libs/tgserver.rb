@@ -91,6 +91,7 @@ class TelegramServer
 
   def callbackHandler(bot, message)
     inventoryCallback(bot, message)
+    lookAtHereCallback(bot, message)
   end
 
   def deliver(sender, txt)
@@ -118,6 +119,11 @@ class TelegramServer
         keyboard = generateInventoryKeyboard(txt)
       end
 
+      # генерация инлайн клавиатуры смотреть на "здесь"
+      if txt =~ /здесь:\n(.*)выходы/im
+        keyboard = generateLookAtHereKeyboard(txt)
+      end
+
       # стартовая клава при выходе и автовыходе
       if txt == @game.descr['autologout'] || txt == @game.TextBuild(@game.descr["wakeup"], player)[0]
         keyboard = @startKey
@@ -141,6 +147,26 @@ class TelegramServer
   end
 
   private
+
+  # look at
+  def generateLookAtHereKeyboard(message)
+    here = /здесь:\n(.*)выходы/im.match(message).to_a[1].split("\n")
+
+    kb = []
+    here.each { |elem|
+      name = /^(#{USER_NAME_REGEX})( \(.*\))?$/i.match(elem).to_a[1]
+      kb.push(Telegram::Bot::Types::InlineKeyboardButton.new(text: name, callback_data: "LookAtHere-#{name}"))
+    }
+    return Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
+  end
+
+  def lookAtHereCallback(bot, message)
+    lookData = /^LookAtHere-(?<name>#{USER_NAME_REGEX})$/i.match(message.data).to_a
+    if !lookData.nil? && !lookData.empty?
+      name = lookData[1]
+      @jb.parse_command(Registration.GetLoginOfType(message.from.id, TYPE), "посмотреть на #{name}")
+    end
+  end
 
   # help
   def generateHelpKeyboard(message)
@@ -173,7 +199,7 @@ class TelegramServer
   def inventoryCallback(bot, message)
     invData = /^Inventory-(?<type>[a-z]*)(-(?<index>[0-9]{1,3}))?$/i.match(message.data).to_a
 
-    if !invData.nil?
+    if !invData.nil? && !invData.empty?
       kb = []
       addText = ''
 
