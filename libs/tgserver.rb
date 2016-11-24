@@ -52,7 +52,8 @@ class TelegramServer
   end
 
   def messageHandler(bot, message)
-    if message.text.empty?
+    if message.nil? || message.text.nil? || message.text.empty?
+      log('[tgserver WARN] message text is NIL?!? fucking TG client... Okay...')
       return
     end
 
