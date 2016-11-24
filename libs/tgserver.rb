@@ -210,7 +210,7 @@ class TelegramServer
         for i in 1..inv_split.length
           line_kb.push(Telegram::Bot::Types::InlineKeyboardButton.new(text: "#{i}", callback_data: "Inventory-#{invData[1]}-#{i}"))
 
-          if i % 5 == 4
+          if i % 5 == 0
             kb.push(line_kb.clone)
             line_kb = []
           end
