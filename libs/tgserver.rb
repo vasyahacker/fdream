@@ -112,7 +112,12 @@ class TelegramServer
         keyboard = @startKey
       end
 
-      @bot.api.send_message(chat_id: id[0], text: txt, reply_markup: keyboard) unless txt.empty?
+      # telegram message limit 4096 utf-8 chars
+      txt = txt + " \n"
+      txt.scan(/.{0,3900}[\.!?\n]+|.{0,4050}[\.!?\n\s]+/m) { |m|
+        @bot.api.send_message(chat_id: id[0], text: m, reply_markup: keyboard) unless m.empty?
+        sleep(0.1) # add delay for telegram max 30 messages per second
+      }
     rescue => detail
       log "\nОшибка #{TYPE} при отправке сообщения: #{txt} - игроку #{sender}: #{$!.to_s}\n"+detail.backtrace.join("\n")
     end
