@@ -86,7 +86,8 @@ class TelegramServer
     return false unless id[1] == TYPE
 
     begin
-      keyboard = @dirKey
+      keyboard = @dirKey.clone
+      keyboard.keyboard = keyboard.keyboard.clone
 
       player = @game.players[sender]
 
