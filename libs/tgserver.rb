@@ -150,12 +150,12 @@ class TelegramServer
 
   # look at
   def generateLookAtHereKeyboard(message)
-    here = /здесь:\n(.*)выходы/im.match(message).to_a[1].split("\n")
+    here = /здесь:\n(.*)\n(Здесь находятся|выходы)/im.match(message).to_a[1].split("\n")
 
     kb = []
     here.each { |elem|
       name = /^(#{USER_NAME_REGEX})( \(.*\))?$/i.match(elem).to_a[1]
-      kb.push(Telegram::Bot::Types::InlineKeyboardButton.new(text: name, callback_data: "LookAtHere-#{name}"))
+      kb.push(Telegram::Bot::Types::InlineKeyboardButton.new(text: name, callback_data: "LookAtHere-#{name}")) unless name.nil?
     }
     return Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
   end
