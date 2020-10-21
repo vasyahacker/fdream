@@ -1,0 +1,8 @@
+version: '2.2'
+services:
+    fdream:
+        build: .
+        volumes:
+            - ./db:/usr/src/app/db
+        tty: true
+        restart: always

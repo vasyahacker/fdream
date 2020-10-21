@@ -7,8 +7,8 @@ require 'cgi'
 require 'rubygems'
 #require 'sqlite3-ruby'
 require 'sqlite3'
-require 'xmpp4r/roster'
-require 'xmpp4r'
+#require 'xmpp4r/roster.'
+#require 'xmpp4r'
 #require 'xmpp4r-simple'
 #require 'xml/libxml'
 require 'arrayfields'
@@ -50,11 +50,11 @@ end
 RETURN_LOCATION = @return_location
 START_LOCATION = @start_location
 
-Jabber::debug = false
+#Jabber::debug = false
 
-if ARGV[0] == '--disable-jabber'
-  @jabber_enable = false
-end
+#if ARGV[0] == '--disable-jabber'
+#  @jabber_enable = false
+#end
 
 $DreamInDream = Array.new(0)
 
@@ -201,10 +201,10 @@ game.send { |addr, txt|
 bot.repeatcalls
 GC.start
 
-if @jabber_enable
-  bot.connect
-else
+#if @jabber_enable
+#  bot.connect
+#else
   print "Disabled jabber mode.\nWait enter for exit...\n"
   print STDIN.gets.chomp
   print "Shutdown...\n"
-end
+#end

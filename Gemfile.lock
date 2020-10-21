@@ -1,0 +1,65 @@
+GIT
+  remote: https://github.com/sabudaye/xmpp4r.git
+  revision: 036c768cf17bd69a8010ba3237009cc055d0cead
+  specs:
+    xmpp4r (0.5.7)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    arrayfields (4.9.2)
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
+    equalizer (0.0.11)
+    faraday (1.1.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords
+    gmail (0.7.1)
+      gmail_xoauth (>= 0.3.0)
+      mail (>= 2.2.1)
+    gmail_xoauth (0.4.2)
+      oauth (>= 0.3.6)
+    ice_nine (0.11.2)
+    iconv (1.0.8)
+    inflecto (0.0.2)
+    mail (2.7.1)
+      mini_mime (>= 0.1.1)
+    mini_mime (1.0.2)
+    multipart-post (2.1.1)
+    oauth (0.5.4)
+    power_assert (1.2.0)
+    ruby2_keywords (0.0.2)
+    sqlite3 (1.4.2)
+    telegram-bot-ruby (0.13.0)
+      faraday
+      inflecto
+      virtus
+    test-unit (3.3.6)
+      power_assert
+    thread_safe (0.3.6)
+    virtus (1.0.5)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  arrayfields
+  gmail
+  iconv
+  sqlite3
+  telegram-bot-ruby
+  test-unit
+  xmpp4r!
+
+BUNDLED WITH
+   1.17.2
