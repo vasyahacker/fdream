@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # NOTE: Забытый сон,MUD-бот, игра, ммо рпг настроенная на работу через интерфейс интернет мессенжеров..
 #$KCODE = "utf-8"
-#$LOAD_PATH.unshift('./libs/jabber/')
+$LOAD_PATH.unshift('./vendor/lib')
 #require 'unicode'
 require 'cgi'
 require 'rubygems'
