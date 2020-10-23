@@ -166,6 +166,9 @@ bot.notcommand { |addr, txt|
     mess = game.say(addr, txt)
 #		bot.deliver(addr,mess)unless mess.nil?
     bot.sendstack.push([addr, mess]) unless mess.nil?
+  else
+    mess = game.start(addr)
+    bot.sendstack.push([addr, mess]) unless mess.nil?
   end
 }
 repeat_thread = Thread.new do

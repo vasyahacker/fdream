@@ -2,7 +2,7 @@
 require 'net/smtp'
 require 'iconv'
 require "base64"
-require "gmail"
+#require "gmail"
 #####################################
 # NOTE: Game - main objects manager #
 #####################################
@@ -72,7 +72,7 @@ class Game
 
   end
 
-  def wakeup(sender)
+  def Wakeup(sender)
 
   end
 
@@ -88,21 +88,23 @@ class Game
   end
 
   def send_email(t, to_alias, s, m, file)
-    thread = Thread.new do
-      begin
-        gmail = Gmail.new($SMTP_LOGIN, $SMTP_PWD)
-        email = gmail.deliver do
-          to t
-          subject s
-          body m
-          add_file file unless file.nil?
-        end
-      rescue => detail
-        $stderr.puts "\n[#{Time.now.to_s}]: \n[game] send_email: #{$!.to_s}\n"+detail.backtrace.join("\n")
-        sendmess($MAINADDR, "Ошибка при отсылке почты: #{$!.to_s}")
-      end
-    end
-    nil
+	return
+	  
+#     thread = Thread.new do
+#       begin
+#         gmail = Gmail.new($SMTP_LOGIN, $SMTP_PWD)
+#         email = gmail.deliver do
+#           to t
+#           subject s
+#           body m
+#           add_file file unless file.nil?
+#         end
+#       rescue => detail
+#         $stderr.puts "\n[#{Time.now.to_s}]: \n[game] send_email: #{$!.to_s}\n"+detail.backtrace.join("\n")
+#         sendmess($MAINADDR, "Ошибка при отсылке почты: #{$!.to_s}")
+#       end
+#     end
+#     nil
   end
 
   def playeremail(sender, message)
