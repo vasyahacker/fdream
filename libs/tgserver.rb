@@ -31,6 +31,9 @@ class TelegramServer
           server(t, g)
         rescue => detail
           log "\nОшибка с сервером #{TYPE}: #{$!.to_s}\n"+detail.backtrace.join("\n")
+          sleep 5
+          log "Restart TG"
+          initialize(jb, token, game)
         end
       end
     end
