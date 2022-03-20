@@ -1901,7 +1901,7 @@ class Game
     p = @players[sender]
     rstr = @descr['llistheader']
     rstr += @descr['lowner'] if p.rights == 'admin'
-    i = 0
+#    i = 0
     count = 0
     @locations.each do |l|
 
@@ -1909,7 +1909,7 @@ class Game
         if l.ownerid == p.id || p.rights == 'admin'
           rstr += "\n#{l.id.to_s}: #{l.name}"
           count += 1
-          i += 1
+#          i += 1
         end
 
         if p.rights == 'admin'
@@ -1919,12 +1919,12 @@ class Game
         end
       end
 
-      if i == 108
-        i = 0
-        sendmess(sender, rstr)
-        rstr = @descr['llistheader']
-        rstr += @descr['lowner'] if p.rights == 'admin'
-      end
+#      if i == 108
+#        i = 0
+#        sendmess(sender, rstr)
+#        rstr = @descr['llistheader']
+      rstr += @descr['lowner'] if p.rights == 'admin'
+#      end
     end
     sendmess(sender, rstr+"\ntotal: #{count}")
   end
