@@ -12,8 +12,9 @@ class Game
   def indafork
     thread = Thread.new do
       sleep 1 #important line
+      
 #			dotime = Time.now.to_i + 60*36 
-      loop do
+      while $show_must_go_on do
         @gmut.synchronize do
           begin
 #		if dotime <= Time.now.to_i
@@ -1933,7 +1934,7 @@ class Game
 # FIXME: переделать время на системный таймер
     Thread.new do
       lch = @time+63
-      loop do
+      while $show_must_go_on do
         @time += 1
         begin
           if @time >= lch

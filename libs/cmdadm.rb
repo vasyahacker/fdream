@@ -180,6 +180,7 @@ def LoadAdmCmd(bot, game, type)
       game.playerdelete(message)
     end
   end
+
   bot.add_command(
       :type => type,
       :syntax => 'shutdown <string>',
@@ -188,20 +189,21 @@ def LoadAdmCmd(bot, game, type)
       :is_public => false
   ) do |sender, message|
     game.SaveGame()
-    bot.jabber.disconnect
-    exit
+#    bot.jabber.disconnect
+    $show_must_go_on = false
+    'shutting down...'
   end
 
-  bot.add_command(
-      :type => type,
-      :syntax => 'reboot',
-      :description => 'горячая перезагрузка без сохранения',
-      :regex => /^reboot$/i,
-      :is_public => false
-  ) do |sender, message|
-    bot.jabber.disconnect
-    exit
-  end
+#  bot.add_command(
+#      :type => type,
+#      :syntax => 'reboot',
+#      :description => 'горячая перезагрузка без сохранения',
+#      :regex => /^reboot$/i,
+#      :is_public => false
+#  ) do |sender, message|
+#    bot.jabber.disconnect
+#    exit
+#  end
 
   bot.add_command(
       :type => type,
@@ -263,18 +265,18 @@ def LoadAdmCmd(bot, game, type)
     game.takeadminrights(sender, message) if game.check(sender)
   end
 
-  bot.add_command(
-      :type => type,
-      :syntax => 'reconnect',
-      :description => game.descr['cmdreconnect'],
-      :regex => /^reconnect$/i,
-      :is_public => false
-  ) do |sender, message|
+#  bot.add_command(
+#      :type => type,
+#      :syntax => 'reconnect',
+#      :description => game.descr['cmdreconnect'],
+#      :regex => /^reconnect$/i,
+#      :is_public => false
+#  ) do |sender, message|
 #      bot.jabber.disconnect
 #      sleep 3
-    bot.jabber.reconnect
-    "ok"
-  end
+#    bot.jabber.reconnect
+#    "ok"
+#  end
 
   bot.add_command(
       :type => type,

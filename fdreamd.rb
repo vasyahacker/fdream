@@ -50,6 +50,8 @@ end
 RETURN_LOCATION = @return_location
 START_LOCATION = @start_location
 
+$show_must_go_on = true
+
 #Jabber::debug = false
 
 #if ARGV[0] == '--disable-jabber'
@@ -171,6 +173,7 @@ bot.notcommand { |addr, txt|
     bot.sendstack.push([addr, mess]) unless mess.nil?
   end
 }
+
 repeat_thread = Thread.new do
   oldstatus = ''
   loop {
@@ -195,6 +198,10 @@ repeat_thread = Thread.new do
 #      oldstatus = game.status
 #    end
 #   sleep 27
+    if !$show_must_go_on
+      sleep 3
+      exit
+    end
   }
 end
 
