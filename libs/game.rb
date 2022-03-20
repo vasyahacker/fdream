@@ -1682,7 +1682,7 @@ class Game
         end
       }
     end
-
+    p.lrealise = @time
     return d[0]+look(sender)+"\n\n"+checksms
   end
 
