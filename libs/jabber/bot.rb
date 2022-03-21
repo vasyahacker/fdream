@@ -350,7 +350,7 @@ module Jabber
             @sendstack = []
 
             ss.each do |sender, message|
-              Thread.new do
+#              Thread.new do
                 begin
                   next if @tserver.deliver(sender, message)
                   if !@config[:tgkey].empty?
@@ -361,7 +361,7 @@ module Jabber
                 rescue => detail
                   print "\n[#{Time.now.to_s}] Ошибка при отсылке: #{$!.to_s}\n"+detail.backtrace.join("\n")
                 end
-              end
+#              end
             end
             ss.clear
           else
